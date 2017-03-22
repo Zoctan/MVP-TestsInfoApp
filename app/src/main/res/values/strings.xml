@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">Solar众评</string>
+
+    <string name="phone">手机</string>
+    <string name="laptop">笔记本</string>
+    <string name="earphone">耳机</string>
+
+    <string name="action_settings">设置</string>
+    <string name="navigation_test">Solar众评</string>
+    <string name="navigation_group">小组</string>
+    <string name="navigation_about">关于</string>
+
+    <string name="toggle_day">日间模式</string>
+    <string name="toggle_night">夜间模式</string>
+    <string name="drawer_open">开</string>
+    <string name="drawer_close">关</string>
+
+    <string name="user_login">用户登录</string>
+    <string name="user_img">修改头像</string>
+    <string name="user_pwd">修改密码</string>
+    <string name="sure_pwd">确认修改</string>
+    <string name="logout">登出</string>
+    <string name="user_register">用户注册</string>
+    <string name="user_center">用户中心</string>
+    <string name="login">登录</string>
+    <string name="not_login">未登录</string>
+    <string name="register">注册</string>
+    <string name="old_password">请输入原密码</string>
+    <string name="new_password">新密码</string>
+    <string name="input_password2">请再次输入密码</string>
+    <string name="input_password">请输入密码</string>
+    <string name="input_name">请输入用户名</string>
+    <string name="back">返回</string>
+    <string name="comment_zone">评论区</string>
+    <string name="comment">评论</string>
+
+    <string name="app_description">欢迎使用Solar众评</string>
+    <string name="site">http://www.stormsaber.com/solar</string>
+    <string name="author1">3115000942朱天强</string>
+    <string name="author2">3115000552邝健锋</string>
+
+    <string name="loading">加载中…</string>
+    <string name="load_fail">加载数据失败!</string>
+    <string name="image_hit">刷新查看更多内容~</string>
+    <string name="transition_test_img">过渡图片</string>
+    <string name="click_to_go">点击进入</string>
+</resources>
