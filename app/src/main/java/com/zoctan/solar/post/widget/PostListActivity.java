@@ -7,6 +7,7 @@ import com.zoctan.solar.beans.PostBean;
 import com.zoctan.solar.post.PostAdapter;
 import com.zoctan.solar.post.presenter.PostPresenter;
 import com.zoctan.solar.post.view.PostView;
+import com.zoctan.solar.utils.ImageLoaderUtils;
 import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
@@ -30,6 +31,7 @@ import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 
 
 import java.util.ArrayList;
@@ -59,6 +61,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     private PostListActivity PostListActivitySelf = this;
     private int mType;
     private SPUtils mSPUtils;
+    private ImageView imageView;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void onCreate(Bundle savedInstanceState) {
@@ -133,10 +136,16 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         // 设置适配器
         mRecyclerView.setAdapter(mAdapter);
 
+        // setup the picture for cover page
+        initImageView();
+
         // 滚动监听 this is no need for now.
         //mRecyclerView.addOnScrollListener(mOnScrollListener);
     }
-
+    private void initImageView(){
+        imageView = (ImageView)(findViewById(R.id.ivImage));
+        ImageLoaderUtils.display(this,imageView,mGroup.getImgsrc());
+    }
     private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
         // 最后一个可见的item
         private int lastVisibleItem;
