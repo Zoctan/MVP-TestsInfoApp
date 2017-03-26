@@ -56,7 +56,7 @@
                         <RelativeLayout
                             android:layout_gravity="top"
                             android:layout_width="80dp"
-                            android:layout_height="80dp">
+                            android:layout_height="wrap_content">
 
                             <de.hdodenhof.circleimageview.CircleImageView
                                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -66,8 +66,7 @@
                                 android:layout_height="50dp"
                                 app:civ_border_width="1dp"
                                 app:civ_border_color="@color/primary_light"
-                                android:layout_centerInParent="true" />
-
+                                android:layout_centerHorizontal="true" />
                             <TextView
                                 android:id="@+id/tvUser_postDetail"
                                 android:layout_width="wrap_content"
@@ -76,7 +75,7 @@
                                 android:textColor="@color/secondary_text"
                                 android:singleLine="true"
                                 android:textSize="14sp"
-                                android:layout_centerInParent="true" />
+                                android:layout_centerHorizontal="true" />
 
                             <TextView
                                 android:id="@+id/tvTime_postDetail"
@@ -84,9 +83,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@id/tvUser_postDetail"
                                 android:textColor="@color/secondary_text"
-                                android:singleLine="true"
+                                android:singleLine="false"
                                 android:textSize="14sp"
-                                android:layout_centerInParent="true" />
+                                android:layout_centerHorizontal="true" />
+
 
                         </RelativeLayout>
 
@@ -106,7 +106,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:layout_centerVertical="true" />
+                        android:layout_centerVertical="true"
+                        android:visibility="invisible" />
 
                     <TextView
                         android:layout_below="@+id/LinearLayout"
@@ -130,43 +131,96 @@
                         android:scrollbars="vertical"
                         android:paddingTop="@dimen/card_margin">
                     </android.support.v7.widget.RecyclerView>
-            </RelativeLayout>
+                    <TextView
+                        android:id="@+id/comment_divider"
+                        android:layout_below="@+id/RV_comment"
+                        android:layout_width="fill_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/divider" />
+
+                    <!--
+                        The RelativeLayout below is used to `hold' the second RelativeLayout. If you delete the first, the second is gone. I don't know why, you can try it yourself. Good luck!
+                    -->
+
+                    <RelativeLayout
+                        android:layout_below="@+id/comment_divider"
+                        android:id="@+id/add_comment_layoutFF"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <EditText
+                            android:id="@+id/add_commentFF"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:drawable/edit_text"
+                            android:enabled="true"
+                            android:gravity="top"
+                            android:hint="@string/post_comment_hint"
+                            android:inputType="textMultiLine"
+                            android:maxLines="8"
+                            android:minLines="3"
+                            android:scrollbars="vertical"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@android:color/darker_gray" />
+                        <Button
+                            android:id="@+id/btn_addFF"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/add_commentFF"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/primary"
+                            android:textColor="@android:color/white"
+                            android:gravity="center"
+                            android:text="@string/comment"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+
+                    <RelativeLayout
+                        android:layout_marginTop="5dp"
+                        android:id="@+id/add_comment_layout"
+                        android:layout_below="@+id/RV_comment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:gravity="center">
+
+                        <EditText
+                            android:id="@+id/add_comment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:drawable/edit_text"
+                            android:enabled="true"
+                            android:gravity="top"
+                            android:hint="@string/post_comment_hint"
+                            android:inputType="textMultiLine"
+                            android:maxLines="8"
+                            android:minLines="3"
+                            android:scrollbars="vertical"
+                            android:textColor="@android:color/black"
+                            android:textColorHint="@android:color/black" />
+                        <!--确认评论-->
+                        <Button
+                            android:id="@+id/btn_add"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/add_comment"
+                            android:layout_marginTop="5dp"
+                            android:background="@color/primary"
+                            android:textColor="@android:color/white"
+                            android:gravity="center"
+                            android:text="@string/comment"
+                            android:textSize="16sp" />
+                    </RelativeLayout>
+
+
+                </RelativeLayout>
             </android.support.v4.widget.NestedScrollView>
         </android.support.v4.widget.SwipeRefreshLayout>
-
-        <RelativeLayout
-        android:id="@+id/add_comment_layout"
-        android:layout_below="@+id/SwipeContainer"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:gravity="center"
-        tools:ignore="UselessParent">
-            <EditText
-                android:id="@+id/add_comment"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:enabled="true"
-                android:gravity="top"
-                android:inputType="textMultiLine"
-                android:minLines="3"
-                android:maxLines="8"
-                android:scrollbars="vertical"
-                android:background="@android:drawable/edit_text" >
-            </EditText>
-            <!--确认评论-->
-            <Button
-                android:id="@+id/btn_add"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/add_comment"
-                android:layout_marginTop="5dp"
-                android:background="@color/primary"
-                android:textColor="@android:color/white"
-                android:gravity="center"
-                android:text="@string/comment"
-                android:textSize="16sp" />
-        </RelativeLayout>
     </RelativeLayout>
+
 </android.support.design.widget.CoordinatorLayout>

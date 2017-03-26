@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 
 import android.support.v4.app.ActivityCompat;
@@ -62,6 +63,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     private int mType;
     private SPUtils mSPUtils;
     private ImageView imageView;
+    FloatingActionButton fab;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void onCreate(Bundle savedInstanceState) {
@@ -70,11 +72,24 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
 
         // 初始化控件
         initView();
+        initFloatButton();
 
         mPostPresenter = new PostPresenter(this);
 
         // 刷新
         onRefresh();
+    }
+
+    private void initFloatButton(){
+        fab = (FloatingActionButton) findViewById(R.id.postlist_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Intent intent = new Intent(PostListActivitySelf,PostAddActivity.class);
+                ActivityCompat.startActivity(PostListActivitySelf, intent, null);
+            }
+        });
     }
 
     // 初始化控件

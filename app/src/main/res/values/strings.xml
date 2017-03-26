@@ -44,4 +44,8 @@
     <string name="image_hit">刷新查看更多内容~</string>
     <string name="transition_test_img">过渡图片</string>
     <string name="click_to_go">点击进入</string>
+
+    <string name="post_comment_hint">feed your comment here</string>
+    <string name="title_activity_comment_box">comment_box</string>
+    <string name="comment_box_btn">Post</string>
 </resources>

@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -41,7 +42,7 @@ import me.imid.swipebacklayout.lib.SwipeBackLayout;
  * Created by root on 3/6/17.
  */
 
-public class PostDetailActivity extends SwipeBackActivity implements PostDetailView,SwipeRefreshLayout.OnRefreshListener{
+public class PostDetailActivity extends SwipeBackActivity implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener,PostDetailView{
     // 默认根据时间调节日夜间模式
     {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
@@ -63,6 +64,7 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
     private CircleImageView mCircleImageView;
     private boolean mIsLogin;
     private SwipeRefreshLayout mSwipeRefreshWidget;
+    private Button submitCommentBtn;
 
     private String TAG = "PostDetailActivity";
 
@@ -80,12 +82,22 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
         initImageView();
         // initialize Swipe
         initSwipe();
+        // initialize Button
+        initButton();
 
         mPostDetailPresenter = new PostDetailPresenter(getApplication(), this);
         onRefresh();
 
         // 将该Activity添加到ActivityCollector管理器中
         ActivityCollector.addActivity(this);
+
+
+    }
+
+    // initialize Button
+    void initButton(){
+        submitCommentBtn = (Button)findViewById(R.id.btn_add);
+        submitCommentBtn.setOnClickListener(this);
 
 
     }
@@ -119,7 +131,7 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
         }
 
         // 找到Loading图标位置
-        mPbLoading = (ProgressBar) findViewById(R.id.progress_postDetail);
+        //mPbLoading = (ProgressBar) findViewById(R.id.progress_postDetail);
         // 找到post内容位置
         mTVPostContent = (HtmlTextView) findViewById(R.id.htPostContent);
         mTVPostUser = (TextView) findViewById(R.id.tvUser_postDetail) ;
@@ -197,8 +209,11 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
     public void hideLoading() {
         LogUtils.d(TAG,"hide loading");
         // 移除Loading圈圈
-        mPbLoading.setVisibility(View.GONE);
+        //mPbLoading.setVisibility(View.GONE);
         mSwipeRefreshWidget.setRefreshing(false);
+    }
+    public void onClick(View view){
+        // do something.
     }
     @Override
     public void onRefresh(){
