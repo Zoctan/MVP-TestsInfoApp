@@ -7,10 +7,6 @@ import java.io.Serializable;
  */
 public class GroupBean implements Serializable {
 
-    /**
-     * API返回值
-     * not define
-     */
 
 
     // 分类id

@@ -3,12 +3,14 @@ package com.zoctan.solar.post.widget;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import com.zoctan.solar.post.PostCommentAdapter;
 import com.zoctan.solar.post.view.PostDetailView;
 import com.zoctan.solar.post.presenter.PostDetailPresenter;
 import com.zoctan.solar.utils.ActivityCollector;
+import com.zoctan.solar.utils.ImageLoaderUtils;
+import com.zoctan.solar.utils.ImageUtils;
 import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
@@ -31,13 +35,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 /**
  * Created by root on 3/6/17.
  */
 
-public class PostDetailActivity extends SwipeBackActivity implements PostDetailView{
+public class PostDetailActivity extends SwipeBackActivity implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener,PostDetailView{
     // 默认根据时间调节日夜间模式
     {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
@@ -56,7 +61,10 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
     private RelativeLayout mCommentLayout;
     private TextView mTVPostUser;
     private TextView mTVPostTime;
+    private CircleImageView mCircleImageView;
     private boolean mIsLogin;
+    private SwipeRefreshLayout mSwipeRefreshWidget;
+    private Button submitCommentBtn;
 
     private String TAG = "PostDetailActivity";
 
@@ -70,14 +78,42 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
 
         // 初始化控件
         initView();
+        // initialize ImageView
+        initImageView();
+        // initialize Swipe
+        initSwipe();
+        // initialize Button
+        initButton();
 
         mPostDetailPresenter = new PostDetailPresenter(getApplication(), this);
-        mPostDetailPresenter.loadPostDetail(mPost.getId());
+        onRefresh();
 
         // 将该Activity添加到ActivityCollector管理器中
         ActivityCollector.addActivity(this);
 
 
+    }
+
+    // initialize Button
+    void initButton(){
+        submitCommentBtn = (Button)findViewById(R.id.btn_add);
+        submitCommentBtn.setOnClickListener(this);
+
+
+    }
+
+    // initialize ImageView()
+    void initImageView(){
+        mCircleImageView = (CircleImageView)findViewById(R.id.user_image_postDetail);
+        ImageLoaderUtils.displayUserImg(this,mCircleImageView,mPost.getUser_img());
+    }
+    void initSwipe(){
+        // 下拉刷新组件SwipeRefreshLayout
+        mSwipeRefreshWidget = (SwipeRefreshLayout) findViewById(R.id.SwipeContainer);
+        // 设置刷新时动画的颜色，可以设置4个
+        mSwipeRefreshWidget.setColorSchemeResources(R.color.primary, R.color.divider, R.color.primary_light, R.color.accent);
+        // 下拉刷新监听
+        mSwipeRefreshWidget.setOnRefreshListener(this);
     }
 
     // 初始化控件
@@ -95,7 +131,7 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
         }
 
         // 找到Loading图标位置
-        mPbLoading = (ProgressBar) findViewById(R.id.progress_postDetail);
+        //mPbLoading = (ProgressBar) findViewById(R.id.progress_postDetail);
         // 找到post内容位置
         mTVPostContent = (HtmlTextView) findViewById(R.id.htPostContent);
         mTVPostUser = (TextView) findViewById(R.id.tvUser_postDetail) ;
@@ -128,7 +164,7 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mAdapter = new PostCommentAdapter();
+        mAdapter = new PostCommentAdapter(this.getApplicationContext());
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -156,7 +192,8 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
     public void showLoading() {
         LogUtils.d(TAG,"show loading");
         // Loading圈圈设置成可见
-        mPbLoading.setVisibility(View.VISIBLE);
+        //mPbLoading.setVisibility(View.VISIBLE);
+        mSwipeRefreshWidget.setRefreshing(true);
     }
 
 
@@ -172,9 +209,19 @@ public class PostDetailActivity extends SwipeBackActivity implements PostDetailV
     public void hideLoading() {
         LogUtils.d(TAG,"hide loading");
         // 移除Loading圈圈
-        mPbLoading.setVisibility(View.GONE);
+        //mPbLoading.setVisibility(View.GONE);
+        mSwipeRefreshWidget.setRefreshing(false);
     }
-
+    public void onClick(View view){
+        // do something.
+    }
+    @Override
+    public void onRefresh(){
+        if(mData!=null){
+            mData.clear();
+        }
+        mPostDetailPresenter.loadPostDetail(mPost.getId());
+    }
     @Override
     public void onDestroy() {
         LogUtils.d(TAG,"postDetail onDestroy");

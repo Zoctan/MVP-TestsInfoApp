@@ -10,6 +10,7 @@ import com.zoctan.solar.beans.PostDetailBean;
 import com.zoctan.solar.utils.JsonUtils;
 import com.zoctan.solar.utils.LogUtils;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class PostJsonUtils {
     }
     public static PostDetailBean readJsonPostDetailBeans(String res,String id){
         PostDetailBean postDetailBean = null;
-        PostCommentBean postCommentBean = null;
+        List<PostCommentBean> comments = new ArrayList<>();
         try {
             // 创建一个JsonParser
             mJsonParser = new JsonParser();
@@ -67,13 +68,16 @@ public class PostJsonUtils {
                 return null;
             }
 
-            // 将Json对象转换为 postDetail and postComment
             mJsonArray = mJsonElement.getAsJsonArray();
             postDetailBean = JsonUtils.deserialize(mJsonArray.get(0).getAsJsonObject(), PostDetailBean.class);
-            postCommentBean = JsonUtils.deserialize(mJsonArray.get(1).getAsJsonObject(), PostCommentBean.class);
-            ArrayList<PostCommentBean> arrayList = new ArrayList<>();
-            arrayList.add(postCommentBean);
-            postDetailBean.postCommentBeen=arrayList;
+
+            for(int i=1;i<mJsonArray.size();i++){
+                JsonObject jo = mJsonArray.get(i).getAsJsonObject();
+                PostCommentBean postCommentBean = JsonUtils.deserialize(jo,PostCommentBean.class);
+                comments.add(postCommentBean);
+            }
+            postDetailBean.postCommentBeen=comments;
+
         } catch (Exception e) {
             LogUtils.e(TAG, "将JSON转换为post对象发生错误" , e);
         }
