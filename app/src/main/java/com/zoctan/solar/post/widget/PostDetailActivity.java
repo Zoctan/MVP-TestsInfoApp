@@ -1,8 +1,6 @@
 package com.zoctan.solar.post.widget;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -23,7 +21,6 @@ import com.zoctan.solar.post.view.PostDetailView;
 import com.zoctan.solar.post.presenter.PostDetailPresenter;
 import com.zoctan.solar.utils.ActivityCollector;
 import com.zoctan.solar.utils.ImageLoaderUtils;
-import com.zoctan.solar.utils.ImageUtils;
 import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
@@ -38,15 +35,8 @@ import java.util.Objects;
 import de.hdodenhof.circleimageview.CircleImageView;
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
-/**
- * Created by root on 3/6/17.
- */
-
 public class PostDetailActivity extends SwipeBackActivity implements View.OnClickListener,SwipeRefreshLayout.OnRefreshListener,PostDetailView{
-    // 默认根据时间调节日夜间模式
-    {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-    }
+
     private PostBean mPost;
     private HtmlTextView mTVPostContent;
     private PostDetailPresenter mPostDetailPresenter;
@@ -68,11 +58,20 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
 
     private String TAG = "PostDetailActivity";
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onCreate(Bundle savedInstanceState){
         LogUtils.d(TAG,"PostDetail onCreate");
         super.onCreate(savedInstanceState);
+
+        // 如果为日间模式
+        mSPUtils = new SPUtils(this);
+        if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
+            // 日间
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            // 夜间
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
         // 设置Post详情要显示的视图
         setContentView(R.layout.activity_post_detail);
 
@@ -90,16 +89,12 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
 
         // 将该Activity添加到ActivityCollector管理器中
         ActivityCollector.addActivity(this);
-
-
     }
 
     // initialize Button
     void initButton(){
         submitCommentBtn = (Button)findViewById(R.id.btn_add);
         submitCommentBtn.setOnClickListener(this);
-
-
     }
 
     // initialize ImageView()
@@ -117,18 +112,7 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
     }
 
     // 初始化控件
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initView() {
-
-        // 如果为日间模式
-        mSPUtils = new SPUtils(this);
-        if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
-            // 日间
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            // 夜间
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
 
         // 找到Loading图标位置
         //mPbLoading = (ProgressBar) findViewById(R.id.progress_postDetail);
@@ -191,8 +175,6 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
     @Override
     public void showLoading() {
         LogUtils.d(TAG,"show loading");
-        // Loading圈圈设置成可见
-        //mPbLoading.setVisibility(View.VISIBLE);
         mSwipeRefreshWidget.setRefreshing(true);
     }
 
@@ -208,8 +190,6 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
     @Override
     public void hideLoading() {
         LogUtils.d(TAG,"hide loading");
-        // 移除Loading圈圈
-        //mPbLoading.setVisibility(View.GONE);
         mSwipeRefreshWidget.setRefreshing(false);
     }
     public void onClick(View view){

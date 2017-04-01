@@ -33,6 +33,7 @@
     <string name="back">返回</string>
     <string name="comment_zone">评论区</string>
     <string name="comment">评论</string>
+    <string name="post">发帖</string>
 
     <string name="app_description">欢迎使用Solar众评</string>
     <string name="site">http://www.stormsaber.com/solar</string>
@@ -45,7 +46,7 @@
     <string name="transition_test_img">过渡图片</string>
     <string name="click_to_go">点击进入</string>
 
-    <string name="post_comment_hint">feed your comment here</string>
-    <string name="title_activity_comment_box">comment_box</string>
-    <string name="comment_box_btn">Post</string>
+    <string name="comment_hint">写点什么吧~</string>
+    <string name="post_title_hint">标题</string>
+    <string name="post_content_hint">内容</string>
 </resources>

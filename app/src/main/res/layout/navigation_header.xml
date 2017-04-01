@@ -36,5 +36,5 @@
         android:onClick="toggleClick"
         android:textOff="@string/toggle_day"
         android:textOn="@string/toggle_night"
-        android:textSize="8sp" />
+        android:textSize="12sp" />
 </RelativeLayout>

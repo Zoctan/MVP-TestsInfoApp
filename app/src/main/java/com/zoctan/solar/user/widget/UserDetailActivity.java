@@ -4,11 +4,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -39,10 +37,6 @@ import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 public class UserDetailActivity extends SwipeBackActivity implements UserDetailView, View.OnClickListener {
 
-    // 默认根据时间调节日夜间模式
-    {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-    }
     private Button mBtnLogout, mBtnImg, mBtnPwd, mBtnSure, mBtnEye;
     private EditText mEtOldPassword, mEtNewPassword;
     private FrameLayout mOldLayout, mNewLayout;
@@ -58,10 +52,19 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
     private static final int CROP_SMALL_PICTURE = 2;
     protected static Uri tempUri;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 如果为日间模式
+        mSPUtils = new SPUtils(this);
+        if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
+            // 日间
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            // 夜间
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
         // 设置登录要显示的视图
         setContentView(R.layout.activity_user);
 
@@ -75,18 +78,7 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
     }
 
     // 初始化控件
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initView() {
-
-        // 如果为日间模式
-        mSPUtils = new SPUtils(this);
-        if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
-            // 日间
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            // 夜间
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
 
         // 接收传来的数据
         Intent intent = getIntent();
@@ -172,7 +164,6 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
     }
 
     // 修改密码确认点击
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void clickSure() {
         String oldPassword = mEtOldPassword.getText().toString();
         String newPassword = mEtNewPassword.getText().toString();

@@ -12,6 +12,7 @@ import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -23,6 +24,7 @@ import android.support.design.widget.Snackbar;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import android.support.v7.app.AppCompatDelegate;
@@ -39,15 +41,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static android.icu.lang.UCharacter.WordBreak.NEWLINE;
+
 /**
  * Post列表实现类
  */
 
 public class PostListActivity extends SwipeBackActivity implements PostView,SwipeRefreshLayout.OnRefreshListener {
-    // 默认根据时间调节日夜间模式
-    {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-    }
 
     private PostAdapter mAdapter;
     private static final String TAG = "PostListFragment";
@@ -63,38 +63,9 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     private int mType;
     private SPUtils mSPUtils;
     private ImageView imageView;
-    FloatingActionButton fab;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_postlist);
-
-        // 初始化控件
-        initView();
-        initFloatButton();
-
-        mPostPresenter = new PostPresenter(this);
-
-        // 刷新
-        onRefresh();
-    }
-
-    private void initFloatButton(){
-        fab = (FloatingActionButton) findViewById(R.id.postlist_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                Intent intent = new Intent(PostListActivitySelf,PostAddActivity.class);
-                ActivityCompat.startActivity(PostListActivitySelf, intent, null);
-            }
-        });
-    }
-
-    // 初始化控件
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void initView() {
         // 如果为日间模式
         mSPUtils = new SPUtils(this);
         if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
@@ -104,6 +75,19 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
             // 夜间
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
+        setContentView(R.layout.activity_postlist);
+
+        // 初始化控件
+        initView();
+
+        mPostPresenter = new PostPresenter(this);
+
+        // 刷新
+        onRefresh();
+    }
+
+    // 初始化控件
+    private void initView() {
 
         mGroup = (GroupBean)getIntent().getSerializableExtra("group");
         mType = Integer.parseInt(mGroup.getId());
@@ -157,10 +141,23 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         // 滚动监听 this is no need for now.
         //mRecyclerView.addOnScrollListener(mOnScrollListener);
     }
+
+    public void makePost(View view){
+        mToolbar.setTitle(R.string.post);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_content,new PostAddFragment(), "postFrame")
+                // 显示fragment动画
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack("add")
+                .commit();
+    }
+
     private void initImageView(){
         imageView = (ImageView)(findViewById(R.id.ivImage));
         ImageLoaderUtils.display(this,imageView,mGroup.getImgsrc());
     }
+
     private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
         // 最后一个可见的item
         private int lastVisibleItem;
@@ -188,7 +185,6 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
             }
         }
     };
-
 
     private PostAdapter.OnItemClickListener mOnItemClickListener = new PostAdapter.OnItemClickListener() {
         @Override

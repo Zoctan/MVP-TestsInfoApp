@@ -4,10 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 
 import android.support.v4.app.Fragment;
@@ -46,11 +44,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MainActivity extends AppCompatActivity implements MainView,View.OnClickListener {
 
-    // 默认根据时间调节日夜间模式
-    {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-    }
-
     private String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
@@ -68,7 +61,6 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
     // 保存点击的时间
     private long exitTime = 0;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
     }
 
     // 初始化控件
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initView() {
         // 设置Toolbar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -111,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
 
         // 获取头布局文件
         mHeaderView = mNavigationView.getHeaderView(0);
+        mSwitch = (Switch) mHeaderView.findViewById(R.id.switch_day_night);
         mHeaderText = (TextView) mHeaderView.findViewById(R.id.header_text);
         mHeaderText.setOnClickListener(this);
         mHeaderImage = (CircleImageView) mHeaderView.findViewById(R.id.header_image);
@@ -130,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
         }else {
             mHeaderText.setText("未登录");
         }
-
-        mSwitch = (Switch) mHeaderView.findViewById(R.id.switch_day_night);
 
         // 如果为日间模式
         if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
@@ -156,7 +146,6 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
 
     // 广播重写
     BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
-        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void onReceive(Context context, Intent intent) {
             if(Objects.equals(intent.getAction(), "userLogin")
@@ -257,20 +246,18 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
     }
 
     // 切换日夜间模式
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void toggleClick(View view) {
         // 如果为日间模式
         if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
             // 将toggle置为night
             mSPUtils.putString("toggle", "night");
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            recreate();
         } else {
             // 将toggle置为day
             mSPUtils.putString("toggle", "day");
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            recreate();
         }
+        this.recreate();
     }
 
     // 双击退出

@@ -1,9 +1,7 @@
 package com.zoctan.solar.test.widget;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -32,11 +30,6 @@ import me.imid.swipebacklayout.lib.SwipeBackLayout;
  */
 public class TestDetailActivity extends SwipeBackActivity implements TestDetailView {
 
-    // 默认根据时间调节日夜间模式
-    {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-    }
-
     private TestBean mTest;
     private HtmlTextView mTVTestContent;
     private TestDetailPresenter mTestDetailPresenter;
@@ -45,10 +38,19 @@ public class TestDetailActivity extends SwipeBackActivity implements TestDetailV
     private Toolbar mToolbar;
     private SPUtils mSPUtils;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 如果为日间模式
+        mSPUtils = new SPUtils(this);
+        if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
+            // 日间
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            // 将mSwitch置为false, 夜间
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
         // 设置评测详情要显示的视图
         setContentView(R.layout.activity_test_detail);
 
@@ -63,7 +65,6 @@ public class TestDetailActivity extends SwipeBackActivity implements TestDetailV
     }
 
     // 初始化控件
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initView() {
         // 找到Loading图标位置
         mPbLoading = (ProgressBar) findViewById(R.id.progress);
@@ -90,16 +91,6 @@ public class TestDetailActivity extends SwipeBackActivity implements TestDetailV
 
         // 从TestFragment获得test对象实例
         mTest = (TestBean) getIntent().getSerializableExtra("test");
-
-        // 如果为日间模式
-        mSPUtils = new SPUtils(this);
-        if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
-            // 日间
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            // 将mSwitch置为false, 夜间
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
 
         // 带图片伸缩工具栏
         CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
