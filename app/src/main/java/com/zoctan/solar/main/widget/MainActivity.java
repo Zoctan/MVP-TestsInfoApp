@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -43,13 +44,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
 /**
  * 主视图可视化界面
  */
-public class MainActivity extends AppCompatActivity implements MainView {
+public class MainActivity extends AppCompatActivity implements MainView,View.OnClickListener {
 
     // 默认根据时间调节日夜间模式
     {
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
     }
 
+    private String TAG = "MainActivity";
     private DrawerLayout mDrawerLayout;
     private Toolbar mToolbar;
     private MainPresenter mMainPresenter;
@@ -110,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
         // 获取头布局文件
         mHeaderView = mNavigationView.getHeaderView(0);
         mHeaderText = (TextView) mHeaderView.findViewById(R.id.header_text);
+        mHeaderText.setOnClickListener(this);
         mHeaderImage = (CircleImageView) mHeaderView.findViewById(R.id.header_image);
+        mHeaderImage.setOnClickListener(this);
 
         // 判断是否登陆过
         mSPUtils = new SPUtils(this);
@@ -234,7 +238,8 @@ public class MainActivity extends AppCompatActivity implements MainView {
     }
 
     // 侧滑栏用户
-    public void userClick(View view) {
+    public void onClick(View view) {
+        Log.d(TAG,"go in userClick method");
         Intent intent = new Intent();
         if(mIsLogin) {
             Bundle user = new Bundle();
@@ -247,6 +252,7 @@ public class MainActivity extends AppCompatActivity implements MainView {
             intent.setAction("toLogin");
             intent.addCategory("user");
         }
+        Log.d(TAG,"start userClick to another activity");
         startActivity(intent);
     }
 

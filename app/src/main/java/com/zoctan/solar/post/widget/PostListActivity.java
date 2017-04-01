@@ -7,6 +7,7 @@ import com.zoctan.solar.beans.PostBean;
 import com.zoctan.solar.post.PostAdapter;
 import com.zoctan.solar.post.presenter.PostPresenter;
 import com.zoctan.solar.post.view.PostView;
+import com.zoctan.solar.utils.ImageLoaderUtils;
 import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
@@ -17,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 
 import android.support.v4.app.ActivityCompat;
@@ -30,6 +32,7 @@ import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 
 
 import java.util.ArrayList;
@@ -59,6 +62,8 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     private PostListActivity PostListActivitySelf = this;
     private int mType;
     private SPUtils mSPUtils;
+    private ImageView imageView;
+    FloatingActionButton fab;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void onCreate(Bundle savedInstanceState) {
@@ -67,11 +72,24 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
 
         // 初始化控件
         initView();
+        initFloatButton();
 
         mPostPresenter = new PostPresenter(this);
 
         // 刷新
         onRefresh();
+    }
+
+    private void initFloatButton(){
+        fab = (FloatingActionButton) findViewById(R.id.postlist_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
+                Intent intent = new Intent(PostListActivitySelf,PostAddActivity.class);
+                ActivityCompat.startActivity(PostListActivitySelf, intent, null);
+            }
+        });
     }
 
     // 初始化控件
@@ -133,10 +151,16 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         // 设置适配器
         mRecyclerView.setAdapter(mAdapter);
 
+        // setup the picture for cover page
+        initImageView();
+
         // 滚动监听 this is no need for now.
         //mRecyclerView.addOnScrollListener(mOnScrollListener);
     }
-
+    private void initImageView(){
+        imageView = (ImageView)(findViewById(R.id.ivImage));
+        ImageLoaderUtils.display(this,imageView,mGroup.getImgsrc());
+    }
     private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
         // 最后一个可见的item
         private int lastVisibleItem;

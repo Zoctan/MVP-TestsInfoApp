@@ -1,5 +1,6 @@
 package com.zoctan.solar.post;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,12 +9,15 @@ import android.widget.TextView;
 
 import com.zoctan.solar.R;
 import com.zoctan.solar.beans.PostCommentBean;
+import com.zoctan.solar.utils.ImageLoaderUtils;
 import com.zoctan.solar.utils.LogUtils;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by root on 3/15/17.
@@ -23,7 +27,11 @@ public class PostCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private List<PostCommentBean> mData;
     private String TAG = "PostCommentAdapter";
+    private Context mContext;
 
+    public PostCommentAdapter(Context context){
+        this.mContext=context;
+    }
     public void setmData(List<PostCommentBean> data){
         this.mData = data;
         this.notifyDataSetChanged();
@@ -44,6 +52,11 @@ public class PostCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 return;
             }else{
                 ((ItemViewHolder)holder).mUser.setText(comment.getComment_user());
+                ImageLoaderUtils.displayUserImg(
+                        mContext,
+                        ((ItemViewHolder)holder).mUserImg,
+                        comment.getComment_user_img()
+                );
                 ((ItemViewHolder)holder).mTime.setText(comment.getComment_time());
                 ((ItemViewHolder)holder).mComment.setHtml(comment.getComment_content(),new HtmlHttpImageGetter(((ItemViewHolder)holder).mComment));
             }
@@ -59,11 +72,13 @@ public class PostCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     }
     private class ItemViewHolder extends RecyclerView.ViewHolder {
         TextView mUser;
+        CircleImageView mUserImg;
         TextView mTime;
         HtmlTextView mComment;
 
         ItemViewHolder(View view){
             super(view);
+            mUserImg = (CircleImageView) view.findViewById(R.id.user_image);
             mUser = (TextView) view.findViewById(R.id.tvUser);
             mTime = (TextView) view.findViewById(R.id.tvTime);
             mComment = (HtmlTextView) view.findViewById(R.id.htCommentContent);
