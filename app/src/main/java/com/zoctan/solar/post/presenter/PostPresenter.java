@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 public class PostPresenter {
-    private static final String TAG = "PostPresenterImpl";
+
     private PostView mPostView;
     private PostModel mPostModel;
 
@@ -23,22 +23,17 @@ public class PostPresenter {
         this.mPostModel=new PostModelImpl();
     }
 
-    public void loadPost(final int type,final int pageIndex){
-        String url = getUrl(type,pageIndex);
-        LogUtils.d(TAG,url);
+    public void loadPost(final int groupId,final int pageIndex){
+        String url = getUrl(groupId,pageIndex);
         if(pageIndex==0){
             mPostView.showLoading();
         }
-        mPostModel.loadPost(url,type,new OnLoadPostListListener());
+        mPostModel.loadPost(url, groupId, new OnLoadPostListListener());
     }
 
-    private String getUrl(int type,int pageIndex){
+    private String getUrl(int groupId,int pageIndex){
         StringBuilder stringBuilder = new StringBuilder();
-        switch (type){
-
-            default:
-                stringBuilder.append(PostUrls.POST_LIST).append("?group=").append(""+type);
-        }
+        stringBuilder.append(PostUrls.POST_LIST).append("?group=").append(""+groupId);
         stringBuilder.append("&start=").append(pageIndex).append("&size=").append(PostUrls.PAGE_SIZE);
         return stringBuilder.toString();
     }

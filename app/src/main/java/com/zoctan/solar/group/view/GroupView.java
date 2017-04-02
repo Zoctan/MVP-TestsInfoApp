@@ -4,10 +4,6 @@ import com.zoctan.solar.beans.GroupBean;
 
 import java.util.List;
 
-/**
- * Created by root on 3/8/17.
- */
-
 public interface GroupView {
     // 加载数据的过程中需要提示“正在加载”的反馈信息给用户
     void showLoading();

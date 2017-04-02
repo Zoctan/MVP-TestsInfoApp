@@ -7,8 +7,6 @@ import java.io.Serializable;
  */
 public class GroupBean implements Serializable {
 
-
-
     // 分类id
     private String id;
     // 标题

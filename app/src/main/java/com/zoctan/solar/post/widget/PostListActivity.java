@@ -8,16 +8,12 @@ import com.zoctan.solar.post.PostAdapter;
 import com.zoctan.solar.post.presenter.PostPresenter;
 import com.zoctan.solar.post.view.PostView;
 import com.zoctan.solar.utils.ImageLoaderUtils;
-import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -41,8 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static android.icu.lang.UCharacter.WordBreak.NEWLINE;
-
 /**
  * Post列表实现类
  */
@@ -50,7 +44,6 @@ import static android.icu.lang.UCharacter.WordBreak.NEWLINE;
 public class PostListActivity extends SwipeBackActivity implements PostView,SwipeRefreshLayout.OnRefreshListener {
 
     private PostAdapter mAdapter;
-    private static final String TAG = "PostListFragment";
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshWidget;
@@ -60,9 +53,8 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     private Toolbar mToolbar;
     private PostPresenter mPostPresenter;
     private PostListActivity PostListActivitySelf = this;
-    private int mType;
+    private int mGroupId;
     private SPUtils mSPUtils;
-    private ImageView imageView;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +82,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     private void initView() {
 
         mGroup = (GroupBean)getIntent().getSerializableExtra("group");
-        mType = Integer.parseInt(mGroup.getId());
+        mGroupId = Integer.parseInt(mGroup.getId());
 
         mToolbar = (Toolbar) this.findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -136,8 +128,18 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         mRecyclerView.setAdapter(mAdapter);
 
         // setup the picture for cover page
+
         initImageView();
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.post_list_fab);
+
+        // 如果登录了就显示可发帖
+        boolean mIsLogin = mSPUtils.getBoolean("Login");
+        if(mIsLogin) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.setVisibility(View.GONE);
+        }
         // 滚动监听 this is no need for now.
         //mRecyclerView.addOnScrollListener(mOnScrollListener);
     }
@@ -154,8 +156,8 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     }
 
     private void initImageView(){
-        imageView = (ImageView)(findViewById(R.id.ivImage));
-        ImageLoaderUtils.display(this,imageView,mGroup.getImgsrc());
+        ImageView imageView = (ImageView) (findViewById(R.id.ivImage));
+        ImageLoaderUtils.display(this, imageView,mGroup.getImgsrc());
     }
 
     private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
@@ -173,15 +175,11 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            // SCROLL_STATE_FLING:表示手指做了抛的动作(手指离开屏幕前,用力滑了一下,屏幕产生惯性滑动)
-            // SCROLL_STATE_IDLE:表示屏幕已停止,屏幕停止滚动时为0
-            // SCROLL_STATE_TOUCH_SCROLL:表示正在滚动,当屏幕滚动且用户使用的触碰或手指还在屏幕上时为1
             if (newState == RecyclerView.SCROLL_STATE_IDLE
                     && lastVisibleItem + 1 == mAdapter.getItemCount()
                     && mAdapter.isShowFooter()) {
                 // 如果列表滑到最底部, 则加载更多
-                LogUtils.d(TAG, "加载更多");
-                mPostPresenter.loadPost(mType, pageIndex);
+                mPostPresenter.loadPost(mGroupId, pageIndex);
             }
         }
     };
@@ -196,13 +194,8 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
             Intent intent = new Intent(PostListActivitySelf, PostDetailActivity.class);
             intent.putExtra("post", post);
             View transitionView = findViewById(R.id.ivImage);
-            ActivityOptionsCompat options =
-                    ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(
-                                    PostListActivitySelf,
-                                    transitionView,
-                                    getString(R.string.transition_test_img)
-                            );
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(PostListActivitySelf, transitionView, getString(R.string.transition_test_img));
 
             ActivityCompat.startActivity(PostListActivitySelf, intent, options.toBundle());
         }
@@ -245,7 +238,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         if(mData!=null){
             mData.clear();
         }
-        mPostPresenter.loadPost(mType,pageIndex);
+        mPostPresenter.loadPost(mGroupId,pageIndex);
     }
     @Override
     public void showLoadFailMsg(){

@@ -37,5 +37,4 @@ public class GuideViewPagerAdapter extends PagerAdapter {
 		container.addView(views.get(position), 0);
 		return views.get(position);
 	}
-
 }

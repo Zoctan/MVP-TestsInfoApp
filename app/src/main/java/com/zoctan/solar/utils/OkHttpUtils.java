@@ -2,7 +2,6 @@ package com.zoctan.solar.utils;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 
 import com.google.gson.internal.$Gson$Types;
 
@@ -225,8 +224,6 @@ public class OkHttpUtils {
     public static class Param {
         String key;//请求的参数
         String value;//参数的值
-        public Param() {
-        }
 
         public Param(String key, String value) {
             this.key = key;

@@ -1,11 +1,7 @@
 package com.zoctan.solar.api;
 
-/**
- * Created by root on 3/7/17.
- */
-// http://www.stormsaber.com/solar/api/postlist.php?group=
 public class PostUrls {
-
+    // http://www.stormsaber.com/solar/api/postlist.php?group=
     private static final String HOST = "http://www.stormsaber.com/solar/api/";
 
     public static final String POST_LIST = HOST + "postlist.php";

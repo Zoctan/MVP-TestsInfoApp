@@ -25,18 +25,11 @@ import java.util.List;
 public class WelcomeGuideActivity extends Activity implements OnClickListener {
 
 	private ViewPager vp;
-	private GuideViewPagerAdapter adapter;
-	private List<View> views;
-	private Button startBtn;
 	private SPUtils mSPUtils;
-
 	// 引导页图片资源
-	private static final int[] pics = { R.layout.guid_view1, R.layout.guid_view2,
-										R.layout.guid_view3, R.layout.guid_view4 };
-
+	private static final int[] pics = { R.layout.guid_view1, R.layout.guid_view2, R.layout.guid_view3, R.layout.guid_view4 };
 	// 底部小点图片
 	private ImageView[] dots;
-
 	// 记录当前选中位置
 	private int currentIndex;
 
@@ -45,14 +38,14 @@ public class WelcomeGuideActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_guide);
 
-		views = new ArrayList<>();
+		List<View> views = new ArrayList<>();
 
 		// 初始化引导页视图列表
 		for (int i = 0; i < pics.length; i++) {
 			View view = LayoutInflater.from(this).inflate(pics[i], null);
 			
 			if (i == pics.length - 1) {
-				startBtn = (Button) view.findViewById(R.id.btn_login);
+				Button startBtn = (Button) view.findViewById(R.id.btn_login);
 				startBtn.setTag("enter");
 				startBtn.setOnClickListener(this);
 			}
@@ -62,7 +55,7 @@ public class WelcomeGuideActivity extends Activity implements OnClickListener {
 
 		vp = (ViewPager) findViewById(R.id.vp_guide);
 		// 初始化adapter
-		adapter = new GuideViewPagerAdapter(views);
+		GuideViewPagerAdapter adapter = new GuideViewPagerAdapter(views);
 		vp.setAdapter(adapter);
 		vp.setOnPageChangeListener(new PageChangeListener());
 

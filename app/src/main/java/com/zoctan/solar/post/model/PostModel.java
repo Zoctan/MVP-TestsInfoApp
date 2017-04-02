@@ -5,12 +5,8 @@ import com.zoctan.solar.beans.PostDetailBean;
 
 import java.util.List;
 
-/**
- * Created by root on 3/7/17.
- */
-
 public interface PostModel {
-    void loadPost(String url,int type,OnLoadPostListListener listener);
+    void loadPost(String url,int groupId,OnLoadPostListListener listener);
 
     interface OnLoadPostListListener{
         void onSuccess(List<PostBean> list);

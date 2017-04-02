@@ -10,10 +10,8 @@ public interface UserDetailView {
     void showLoading();
     // 加载成功后，需要将“正在加载”反馈信息取消掉
     void hideLoading();
-
     // 显示成功信息
     void showSuccessMsg(UserBean userBean);
-
     // 若失败, 则需要给用户提示信息
     void showFailMsg();
 }

@@ -14,11 +14,11 @@ import java.util.List;
 public class PostModelImpl implements PostModel{
 
     @Override
-    public void loadPost(String url,final int type,final OnLoadPostListListener listener){
+    public void loadPost(final String url,final int groupId,final OnLoadPostListListener listener){
         OkHttpUtils.ResultCallback<String> loadPostCallback = new OkHttpUtils.ResultCallback<String>() {
             @Override
             public void onSuccess(String response) {
-                List<PostBean> postBeanList = PostJsonUtils.readJsonPostBeans(response,type+"");
+                List<PostBean> postBeanList = PostJsonUtils.readJsonPostBeans(response,groupId+"");
                 listener.onSuccess(postBeanList);
             }
 
@@ -50,5 +50,4 @@ public class PostModelImpl implements PostModel{
     private String getDetailUrl(String id){
         return PostUrls.POST_DETAIL+"?post="+id;
     }
-
 }
