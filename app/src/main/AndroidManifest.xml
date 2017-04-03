@@ -3,10 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.zoctan.solar">
 
+    <!-- 访问网络-->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 访问wifi网络-->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- SD卡读取权限-->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 读取扩展卡数据-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!-- 向扩展卡写入数据-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -16,13 +21,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-
         <!-- 引导界面 -->
         <activity
             android:name=".main.widget.SplashActivity"
             android:autoRemoveFromRecents="true">
             <intent-filter>
-
                 <!-- 决定应用程序最先启动的Activity -->
                 <action android:name="android.intent.action.MAIN" />
                 <!-- 决定应用程序是否显示在程序列表里 -->
@@ -47,7 +50,6 @@
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="toLogin" />
-
                 <category android:name="user" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -58,37 +60,29 @@
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="userDetail" />
-
                 <category android:name="user" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <!-- PostList -->
+        <!-- 贴子列表 -->
         <activity
             android:name=".post.widget.PostListActivity"
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="postList" />
-
                 <category android:name="post" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <!-- PostDetail -->
+        <!-- 贴子详情 -->
         <activity
             android:name=".post.widget.PostDetailActivity"
             android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="postDetail" />
-
                 <category android:name="post" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".post.widget.PostAddActivity"
-            android:label="@string/title_activity_comment_box"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
-
 </manifest>

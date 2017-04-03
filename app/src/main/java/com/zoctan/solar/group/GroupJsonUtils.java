@@ -11,16 +11,12 @@ import com.zoctan.solar.utils.LogUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by root on 3/8/17.
- */
-
 public class GroupJsonUtils {
     private final static String TAG = "GroupJsonUtils";
     private static JsonParser mJsonParser;
     private static JsonElement mJsonElement;
     
-    public static List<GroupBean>readJsonGroupBeans(String res,String id){
+    public static List<GroupBean>readJsonGroupBeans(final String res){
         // 将Group实例化成列表List
         List<GroupBean> beans = new ArrayList<>();
         try {
@@ -48,6 +44,4 @@ public class GroupJsonUtils {
         }
         return beans;
     }
-
-
 }

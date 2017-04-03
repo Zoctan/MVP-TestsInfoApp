@@ -4,10 +4,6 @@ import com.zoctan.solar.beans.PostBean;
 
 import java.util.List;
 
-/**
- * Created by root on 3/7/17.
- */
-
 public interface PostView {
     // 加载数据的过程中需要提示“正在加载”的反馈信息给用户
     void showLoading();

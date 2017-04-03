@@ -8,21 +8,21 @@ import com.zoctan.solar.post.PostAdapter;
 import com.zoctan.solar.post.presenter.PostPresenter;
 import com.zoctan.solar.post.view.PostView;
 import com.zoctan.solar.utils.ImageLoaderUtils;
-import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 
 import android.support.v7.app.AppCompatDelegate;
@@ -33,6 +33,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -43,14 +44,9 @@ import java.util.Objects;
  * Post列表实现类
  */
 
-public class PostListActivity extends SwipeBackActivity implements PostView,SwipeRefreshLayout.OnRefreshListener {
-    // 默认根据时间调节日夜间模式
-    {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-    }
+public class PostListActivity extends SwipeBackActivity implements PostView,SwipeRefreshLayout.OnRefreshListener,android.support.v4.app.FragmentManager.OnBackStackChangedListener {
 
     private PostAdapter mAdapter;
-    private static final String TAG = "PostListFragment";
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private SwipeRefreshLayout mSwipeRefreshWidget;
@@ -60,41 +56,12 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     private Toolbar mToolbar;
     private PostPresenter mPostPresenter;
     private PostListActivity PostListActivitySelf = this;
-    private int mType;
+    private int mGroupId;
     private SPUtils mSPUtils;
-    private ImageView imageView;
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_postlist);
-
-        // 初始化控件
-        initView();
-        initFloatButton();
-
-        mPostPresenter = new PostPresenter(this);
-
-        // 刷新
-        onRefresh();
-    }
-
-    private void initFloatButton(){
-        fab = (FloatingActionButton) findViewById(R.id.postlist_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG).setAction("Action", null).show();
-                Intent intent = new Intent(PostListActivitySelf,PostAddActivity.class);
-                ActivityCompat.startActivity(PostListActivitySelf, intent, null);
-            }
-        });
-    }
-
-    // 初始化控件
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void initView() {
         // 如果为日间模式
         mSPUtils = new SPUtils(this);
         if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
@@ -104,9 +71,21 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
             // 夜间
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
+        setContentView(R.layout.activity_postlist);
+
+        // 初始化控件
+        initView();
+        mPostPresenter = new PostPresenter(this);
+
+        // 刷新
+        onRefresh();
+    }
+
+    // 初始化控件
+    private void initView() {
 
         mGroup = (GroupBean)getIntent().getSerializableExtra("group");
-        mType = Integer.parseInt(mGroup.getId());
+        mGroupId = Integer.parseInt(mGroup.getId());
 
         mToolbar = (Toolbar) this.findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
@@ -152,15 +131,43 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         mRecyclerView.setAdapter(mAdapter);
 
         // setup the picture for cover page
+
         initImageView();
 
-        // 滚动监听 this is no need for now.
-        //mRecyclerView.addOnScrollListener(mOnScrollListener);
+        fab = (FloatingActionButton) findViewById(R.id.post_list_fab);
+
+        // 如果登录了就显示可发帖
+        boolean mIsLogin = mSPUtils.getBoolean("Login");
+        if(mIsLogin) {
+            fab.setVisibility(View.VISIBLE);
+        } else {
+            fab.setVisibility(View.GONE);
+        }
+    }
+
+    public void makePost(View view){
+        mToolbar.setTitle(R.string.post);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_content,new PostAddFragment(), "postFrame")
+                // 显示fragment动画
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .addToBackStack("add")
+                .commit();
+        fab.setVisibility(View.GONE);
+    }
+    @Override
+    public void onBackStackChanged() {
+        if(getSupportFragmentManager().getBackStackEntryCount()==0){
+            fab.setVisibility(View.VISIBLE);
+        }
     }
     private void initImageView(){
-        imageView = (ImageView)(findViewById(R.id.ivImage));
-        ImageLoaderUtils.display(this,imageView,mGroup.getImgsrc());
+        ImageView imageView = (ImageView) (findViewById(R.id.ivImage));
+        ImageLoaderUtils.display(this, imageView,mGroup.getImgsrc());
     }
+
     private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
         // 最后一个可见的item
         private int lastVisibleItem;
@@ -176,19 +183,14 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            // SCROLL_STATE_FLING:表示手指做了抛的动作(手指离开屏幕前,用力滑了一下,屏幕产生惯性滑动)
-            // SCROLL_STATE_IDLE:表示屏幕已停止,屏幕停止滚动时为0
-            // SCROLL_STATE_TOUCH_SCROLL:表示正在滚动,当屏幕滚动且用户使用的触碰或手指还在屏幕上时为1
             if (newState == RecyclerView.SCROLL_STATE_IDLE
                     && lastVisibleItem + 1 == mAdapter.getItemCount()
                     && mAdapter.isShowFooter()) {
                 // 如果列表滑到最底部, 则加载更多
-                LogUtils.d(TAG, "加载更多");
-                mPostPresenter.loadPost(mType, pageIndex);
+                mPostPresenter.loadPost(mGroupId, pageIndex);
             }
         }
     };
-
 
     private PostAdapter.OnItemClickListener mOnItemClickListener = new PostAdapter.OnItemClickListener() {
         @Override
@@ -200,13 +202,8 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
             Intent intent = new Intent(PostListActivitySelf, PostDetailActivity.class);
             intent.putExtra("post", post);
             View transitionView = findViewById(R.id.ivImage);
-            ActivityOptionsCompat options =
-                    ActivityOptionsCompat.
-                            makeSceneTransitionAnimation(
-                                    PostListActivitySelf,
-                                    transitionView,
-                                    getString(R.string.transition_test_img)
-                            );
+
+            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(PostListActivitySelf, transitionView, getString(R.string.transition_test_img));
 
             ActivityCompat.startActivity(PostListActivitySelf, intent, options.toBundle());
         }
@@ -249,7 +246,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         if(mData!=null){
             mData.clear();
         }
-        mPostPresenter.loadPost(mType,pageIndex);
+        mPostPresenter.loadPost(mGroupId,pageIndex);
     }
     @Override
     public void showLoadFailMsg(){

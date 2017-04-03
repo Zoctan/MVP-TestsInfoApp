@@ -23,8 +23,7 @@ public class PostJsonUtils {
     private static JsonParser mJsonParser;
     private static JsonObject mJsonObject;
     private static JsonElement mJsonElement;
-    private static JsonArray mJsonArray;
-    
+
     public static List<PostBean> readJsonPostBeans(String res,String id){
         List<PostBean> beans = new ArrayList<>();
         try {
@@ -68,10 +67,10 @@ public class PostJsonUtils {
                 return null;
             }
 
-            mJsonArray = mJsonElement.getAsJsonArray();
+            JsonArray mJsonArray = mJsonElement.getAsJsonArray();
             postDetailBean = JsonUtils.deserialize(mJsonArray.get(0).getAsJsonObject(), PostDetailBean.class);
 
-            for(int i=1;i<mJsonArray.size();i++){
+            for(int i = 1; i< mJsonArray.size(); i++){
                 JsonObject jo = mJsonArray.get(i).getAsJsonObject();
                 PostCommentBean postCommentBean = JsonUtils.deserialize(jo,PostCommentBean.class);
                 comments.add(postCommentBean);

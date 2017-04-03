@@ -1,9 +1,7 @@
 package com.zoctan.solar.user.widget;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.text.method.HideReturnsTransformationMethod;
@@ -28,10 +26,6 @@ import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 public class UserLoginActivity extends SwipeBackActivity implements UserLoginView, View.OnClickListener {
 
-    // 默认根据时间调节日夜间模式
-    {
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_AUTO);
-    }
     private EditText mEtName, mEtPassword, mEtPassword2;
     private Button mBtnLogin, mBtnRegister, mBtnBack, mBtnEye;
     private ProgressBar mPbLoading;
@@ -40,10 +34,19 @@ public class UserLoginActivity extends SwipeBackActivity implements UserLoginVie
     private Toolbar mToolbar;
     private FrameLayout mRegisterLayout;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // 如果为日间模式
+        mSPUtils = new SPUtils(this);
+        if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
+            // 日间
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            // 夜间
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
         // 设置登录要显示的视图
         setContentView(R.layout.activity_login);
 
@@ -57,18 +60,7 @@ public class UserLoginActivity extends SwipeBackActivity implements UserLoginVie
     }
 
     // 初始化控件
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void initView() {
-
-        // 如果为日间模式
-        mSPUtils = new SPUtils(this);
-        if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
-            // 日间
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            // 夜间
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        }
 
         // 初始化toolbar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -106,7 +98,6 @@ public class UserLoginActivity extends SwipeBackActivity implements UserLoginVie
         mBtnEye.setOnClickListener(this);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -137,7 +128,6 @@ public class UserLoginActivity extends SwipeBackActivity implements UserLoginVie
     }
 
     // 通过交换按钮的text来交换位置
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void switchClick() {
         if(mBtnLogin.getText() == "注册") {
             initView();
@@ -152,7 +142,6 @@ public class UserLoginActivity extends SwipeBackActivity implements UserLoginVie
     }
 
     // 登录或注册点击
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void clickButton() {
         String name = mEtName.getText().toString();
         String password = mEtPassword.getText().toString();
@@ -184,7 +173,6 @@ public class UserLoginActivity extends SwipeBackActivity implements UserLoginVie
         return false;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     public boolean checkInput(String name, String password, String password2) {
         if(checkInput(name, password)) {
             if (!Objects.equals(password, password2)) {

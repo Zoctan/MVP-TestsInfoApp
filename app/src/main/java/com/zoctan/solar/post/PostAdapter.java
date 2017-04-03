@@ -96,7 +96,6 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             ((ItemViewHolder) holder).mTime.setText(post.getDigest());
             // 为item设置user
             ((ItemViewHolder)holder).mUser.setText(post.getUser());
-            //ImageLoaderUtils.display(mContext, ((ItemViewHolder) holder).mPostImg, post.getImgsrc());
         }
     }
 

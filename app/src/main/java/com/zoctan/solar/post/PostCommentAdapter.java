@@ -19,10 +19,6 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-/**
- * Created by root on 3/15/17.
- */
-
 public class PostCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<PostCommentBean> mData;

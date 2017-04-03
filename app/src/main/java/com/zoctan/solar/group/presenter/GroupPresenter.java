@@ -9,10 +9,6 @@ import com.zoctan.solar.utils.LogUtils;
 
 import java.util.List;
 
-/**
- * Created by root on 3/8/17.
- */
-
 public class GroupPresenter {
     private static final String TAG = "GroupPresenterImpl";
 
@@ -24,24 +20,10 @@ public class GroupPresenter {
         this.mGroupView=groupView;
     }
 
-    public void loadGroup(final int type,final int pageIndex) {
-        String url = getUrl(type, pageIndex);
+    public void loadGroup() {
+        String url = GroupUrls.GROUP_LIST;
         LogUtils.d(TAG, url);
-        if (pageIndex == 0) {
-            // 只有第一页的或者刷新的时候才显示刷新圈圈
-            mGroupView.showLoading();
-        }
-        mGroupModel.loadGroup(url, type, new OnLoadGroupListListener());
-    }
-
-
-    private String getUrl(int type,int pageIndex){
-        StringBuilder stringBuilder=new StringBuilder();
-        switch(type){
-            default:
-                stringBuilder.append(GroupUrls.GROUP_LIST).append("?type=").append(GroupUrls.GRUOP_ID);
-        }
-        return stringBuilder.toString();
+        mGroupModel.loadGroup(url, new OnLoadGroupListListener());
     }
 
     private class OnLoadGroupListListener implements GroupModel.OnLoadGroupListListener{

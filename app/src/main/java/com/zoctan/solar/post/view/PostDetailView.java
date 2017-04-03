@@ -4,10 +4,6 @@ import com.zoctan.solar.beans.PostCommentBean;
 
 import java.util.List;
 
-/**
- * Created by root on 3/7/17.
- */
-
 public interface PostDetailView {
     // 显示Post内容
     void showPostDetailContent(String testDetailContent);
@@ -17,4 +13,8 @@ public interface PostDetailView {
     void hideLoading();
 
     void addComment(List<PostCommentBean> postCommentBeen);
+
+    void queryAction();
+
+    void showFailMessage();
 }

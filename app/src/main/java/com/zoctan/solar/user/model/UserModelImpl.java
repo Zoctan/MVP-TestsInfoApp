@@ -7,7 +7,6 @@ import com.zoctan.solar.api.UserUrls;
 import com.zoctan.solar.beans.UserBean;
 import com.zoctan.solar.user.UserJsonUtils;
 import com.zoctan.solar.utils.ImageUtils;
-import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.OkHttpUtils;
 import com.zoctan.solar.utils.OkHttpUtils.Param;
 
@@ -36,7 +35,6 @@ public class UserModelImpl implements UserModel {
         OkHttpUtils.ResultCallback<String> loadUserCallback = new OkHttpUtils.ResultCallback<String>() {
             @Override
             public void onSuccess(String response) {
-                //LogUtils.d("用户操作响应数据", response);
                 UserBean userBean = UserJsonUtils.readJsonUserBeans(response);
                 listener.onSuccess(userBean);
             }
@@ -59,8 +57,6 @@ public class UserModelImpl implements UserModel {
         String imageName = String.valueOf(System.currentTimeMillis());
         // 图片本地路径
         String imagePath = ImageUtils.savePhoto(bitmap, imageAbsolutePath, imageName);
-        //LogUtils.d("图片路径", imagePath);
-        //LogUtils.d("图片名字", imageName);
 
         String url = getUserUrl();
         // 组成post表单
