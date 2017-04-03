@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".main.widget.MainActivity">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_test"
+            android:icon="@drawable/ic_test_white_24dp"
+            android:checked="true"
+            android:title="@string/navigation_test" />
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_group"
+            android:icon="@drawable/ic_group_white_24dp"
+            android:title="@string/navigation_group" />
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_about"
+            android:icon="@drawable/ic_about_white_24dp"
+            android:title="@string/navigation_about" />
+    </group>
+</menu>
