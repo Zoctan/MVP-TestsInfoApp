@@ -29,19 +29,16 @@ public class PostPresenter {
         this.mPostModel=new PostModelImpl();
     }
     public void sendPost(String group_id, String title,String content,String user_id){
-        mPostAddFragment.showProcessBar();
         OnSendPostListener listener= new OnSendPostListener();
         mPostModel.sendPost(group_id, title,content,user_id,listener);
     }
     private class OnSendPostListener implements PostModel.OnSendPostListener{
         @Override
         public void onSuccess(){
-            mPostAddFragment.hideProcessBar();
             mPostAddFragment.queryAction();
         }
         @Override
         public void onFailure(String msg,Exception e){
-            mPostAddFragment.hideProcessBar();
             mPostAddFragment.showFailedMessage();
         }
     }

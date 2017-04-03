@@ -42,6 +42,7 @@ public class PostDetailPresenter {
     public void sendPostComment(String post_id,String comment,String user_id){
         mPostModel.sendPostComment(post_id,comment,user_id,new OnSendPostCommentListener());
     }
+
     private class OnSendPostCommentListener implements PostModel.OnSendPostCommentListener{
         @Override
         public void onSuccess(){

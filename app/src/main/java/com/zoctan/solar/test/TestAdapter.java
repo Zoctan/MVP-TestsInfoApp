@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.zoctan.solar.R;
 import com.zoctan.solar.beans.TestBean;
 import com.zoctan.solar.utils.ImageLoaderUtils;
-import com.zoctan.solar.utils.LogUtils;
 
 import java.util.List;
 
@@ -26,7 +25,6 @@ public class TestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<TestBean> mData;
     private boolean mShowFooter = true;
     private Context mContext;
-    private String TAG = "TestAdapter";
 
     // 监听列表点击事件
     private OnItemClickListener mOnItemClickListener;
@@ -58,7 +56,6 @@ public class TestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     // 负责为Item创建视图
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LogUtils.d(TAG,"为Item创建视图");
         if(viewType == TYPE_ITEM) {
             // 实例化一个item_test布局
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_test, parent, false);
@@ -76,7 +73,6 @@ public class TestAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     // 负责将数据绑定到Item的视图上
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        LogUtils.d(TAG,"将数据绑定到Item的视图");
         if(holder instanceof ItemViewHolder) {
             TestBean test = mData.get(position);
             if(test == null) {

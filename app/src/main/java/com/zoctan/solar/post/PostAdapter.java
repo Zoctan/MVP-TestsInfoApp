@@ -58,7 +58,6 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     // 负责为Item创建视图
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LogUtils.d(TAG,"为Item创建视图");
         if((viewType == TYPE_ITEM) || true) {
             // 实例化一个item_post布局
             View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_post, parent, false);
@@ -76,9 +75,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
     // 负责将数据绑定到Item的视图上
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        LogUtils.d(TAG,"将数据绑定到Item的视图上");
-
-        LogUtils.d(TAG,String.format("position: %d",position));
+        //LogUtils.d(TAG,String.format("position: %d",position));
         if(holder instanceof ItemViewHolder) {
             if(position>=mData.size()){
                 return;
@@ -87,9 +84,7 @@ public class PostAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
             if(post == null) {
                 return;
             }
-            LogUtils.d(TAG,String.format("postion: %d" +
-                    "mData.size(): %d" +
-                    "post.getTitle(): %s",position,mData.size(),post.getTitle()));
+            //LogUtils.d(TAG,String.format("postion: %d" + "mData.size(): %d" + "post.getTitle(): %s",position,mData.size(),post.getTitle()));
             // 为item设置标题
             ((ItemViewHolder) holder).mTitle.setText(post.getTitle());
             // 为item设置time

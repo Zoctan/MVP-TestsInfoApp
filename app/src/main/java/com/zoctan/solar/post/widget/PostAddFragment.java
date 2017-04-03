@@ -60,13 +60,6 @@ public class PostAddFragment extends Fragment implements View.OnClickListener {
         mPostPresenter.sendPost(mSPUtils.getString("group_id"), title,content,user_id);
     }
 
-    public void showProcessBar(){
-
-    }
-
-    public void hideProcessBar(){
-
-    }
     public void queryAction(){
         ToastUtils.showShort(getContext(), "成功发帖");
         getActivity().getSupportFragmentManager().popBackStack();
