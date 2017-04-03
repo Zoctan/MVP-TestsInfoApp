@@ -28,10 +28,10 @@ public class PostPresenter {
         this.mPostAddFragment=mPostAddFragment;
         this.mPostModel=new PostModelImpl();
     }
-    public void sendPost(String title,String content,String user_id){
+    public void sendPost(String group_id, String title,String content,String user_id){
         mPostAddFragment.showProcessBar();
         OnSendPostListener listener= new OnSendPostListener();
-        mPostModel.sendPost(title,content,user_id,listener);
+        mPostModel.sendPost(group_id, title,content,user_id,listener);
     }
     private class OnSendPostListener implements PostModel.OnSendPostListener{
         @Override

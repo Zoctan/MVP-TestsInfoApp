@@ -1,6 +1,7 @@
 package com.zoctan.solar.post.widget;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,21 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.zoctan.solar.R;
 import com.zoctan.solar.post.presenter.PostPresenter;
 import com.zoctan.solar.utils.SPUtils;
+import com.zoctan.solar.utils.ToastUtils;
 
 public class PostAddFragment extends Fragment implements View.OnClickListener {
-    private static final String toastText_titleNull = "Title can't be null";
-    private static final String toastText_contentNull = "Content can't be null";
-    private static final String toastText_sendingOK = "sending completed";
-    private static final String toastText_sendingFail ="network is bad";
     
     private EditText mTitle;
     private EditText mContent;
-
     private SPUtils mSPUtils;
     private PostPresenter mPostPresenter;
 
@@ -53,27 +49,30 @@ public class PostAddFragment extends Fragment implements View.OnClickListener {
         String title=mTitle.getText().toString();
         String content = mContent.getText().toString();
         if(title.equals("")){
-            Toast.makeText(getContext(),toastText_titleNull,Toast.LENGTH_SHORT).show();
+            ToastUtils.showShort(getContext(), "标题不能为空");
             return;
         }
         if(content.equals("")){
-            Toast.makeText(getContext(),toastText_contentNull,Toast.LENGTH_SHORT).show();
+            ToastUtils.showShort(getContext(), "内容不能为空");
             return;
         }
         String user_id = mSPUtils.getString("userID");
-        mPostPresenter.sendPost(title,content,user_id);
+        mPostPresenter.sendPost(mSPUtils.getString("group_id"), title,content,user_id);
     }
+
     public void showProcessBar(){
 
     }
+
     public void hideProcessBar(){
 
     }
     public void queryAction(){
-        Toast.makeText(getContext(),toastText_sendingOK,Toast.LENGTH_SHORT).show();
+        ToastUtils.showShort(getContext(), "成功发帖");
         getActivity().getSupportFragmentManager().popBackStack();
     }
+
     public void showFailedMessage(){
-        Toast.makeText(getContext(),toastText_sendingFail,Toast.LENGTH_SHORT).show();
+        ToastUtils.showShort(getContext(), "发帖失败");
     }
 }

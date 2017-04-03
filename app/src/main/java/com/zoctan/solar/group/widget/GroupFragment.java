@@ -25,6 +25,7 @@ import com.zoctan.solar.group.GroupAdapter;
 import com.zoctan.solar.group.presenter.GroupPresenter;
 import com.zoctan.solar.group.view.GroupView;
 import com.zoctan.solar.post.widget.PostListActivity;
+import com.zoctan.solar.utils.SPUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,7 @@ public class GroupFragment extends Fragment implements GroupView,SwipeRefreshLay
                 return;
             }
             GroupBean group = mAdapter.getItem(position);
+            new SPUtils(getContext()).putString("group_id", group.getId());
 
             Intent intent = new Intent(getActivity(), PostListActivity.class);
             intent.putExtra("group", group);

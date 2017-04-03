@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.zoctan.solar.R;
 import com.zoctan.solar.beans.PostBean;
@@ -24,6 +23,7 @@ import com.zoctan.solar.utils.ActivityCollector;
 import com.zoctan.solar.utils.ImageLoaderUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
+import com.zoctan.solar.utils.ToastUtils;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -175,19 +175,19 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
         EditText comment = (EditText)findViewById(R.id.add_comment);
         String text = comment.getText().toString();
         if(text.equals("")){
-            Toast.makeText(this,"comment can't be null",Toast.LENGTH_SHORT).show();
+            ToastUtils.showShort(this, "评论内容不能为空哦~");
             return;
         }
         mPostDetailPresenter.sendPostComment(mPost.getId()+"",text,mSPUtils.getString("userID"));
     }
     public void queryAction(){
-        Toast.makeText(this,"Comment OK",Toast.LENGTH_SHORT).show();
+        ToastUtils.showShort(this, "成功评论");
         EditText comment = (EditText)findViewById(R.id.add_comment);
         comment.setText("");
         onRefresh();
     }
     public void showFailMessage(){
-        Toast.makeText(this,"Comment on the post failed, please try again",Toast.LENGTH_SHORT).show();
+        ToastUtils.showShort(this, "评论失败，请再试试？");
     }
 
     @Override

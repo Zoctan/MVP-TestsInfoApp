@@ -114,24 +114,6 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
             mHeaderText.setText("未登录");
         }
 
-        mSwitch = (Switch) mHeaderView.findViewById(R.id.switch_day_night);
-        mSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                    // 如果为日间模式
-                    if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
-                        // 将toggle置为night
-                        mSPUtils.putString("toggle", "night");
-                        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                        recreate();
-                    } else {
-                        // 将toggle置为day
-                        mSPUtils.putString("toggle", "day");
-                        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                        recreate();
-                    }
-                }
-            });
         // 如果为日间模式
         if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
             // 将toggle置为day
@@ -143,6 +125,24 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
             getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             mSwitch.setChecked(true);
         }
+
+        mSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // 如果为日间模式
+                if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
+                    // 将toggle置为night
+                    mSPUtils.putString("toggle", "night");
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    recreate();
+                } else {
+                    // 将toggle置为day
+                    mSPUtils.putString("toggle", "day");
+                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    recreate();
+                }
+            }
+        });
 
         // 接收来自用户登录/退出/修改头像广播
         IntentFilter mIntentFilter = new IntentFilter();
@@ -245,8 +245,6 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
         }
         startActivity(intent);
     }
-
-
 
     // 双击退出
     public boolean onKeyDown(int keyCode, KeyEvent event) {

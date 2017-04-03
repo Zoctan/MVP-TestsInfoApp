@@ -24,7 +24,7 @@ public interface PostModel {
         void onSuccess();
         void onFailure(String msg,Exception e);
     }
-    void sendPost(String title,String content,String user_id,OnSendPostListener listener);
+    void sendPost(String group_id, String title,String content,String user_id,OnSendPostListener listener);
 
     interface OnSendPostCommentListener{
         void onSuccess();

@@ -5,6 +5,7 @@ import com.zoctan.solar.beans.PostBean;
 import com.zoctan.solar.beans.PostDetailBean;
 import com.zoctan.solar.post.PostJsonUtils;
 import com.zoctan.solar.utils.OkHttpUtils;
+import com.zoctan.solar.utils.OkHttpUtils.Param;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,14 +27,15 @@ public class PostModelImpl implements PostModel{
 
             @Override
             public void onFailure(Exception e) {
-                listener.onFailure("load post list failed",e);
+                listener.onFailure("贴子列表加载失败",e);
             }
         };
         OkHttpUtils.get(url,loadPostCallback);
     }
+
     @Override
     public void loadPostDetail(final String id,final OnLoadPostDetailListener listener){
-        String url =getDetailUrl(id);
+        String url = PostUrls.POST_DETAIL + "?post=" + id;
         OkHttpUtils.ResultCallback<String> loadPostCallback = new OkHttpUtils.ResultCallback<String>() {
             @Override
             public void onSuccess(String response) {
@@ -43,19 +45,14 @@ public class PostModelImpl implements PostModel{
 
             @Override
             public void onFailure(Exception e) {
-                listener.onFailure("Post detail loading failed",e);
+                listener.onFailure("贴子加载失败",e);
             }
         };
         OkHttpUtils.get(url,loadPostCallback);
     }
 
-    private String getDetailUrl(String id){
-        return PostUrls.POST_DETAIL+"?post="+id;
-    }
-
     @Override
-    public void sendPost(String title,String content,String user_id,final OnSendPostListener listener){
-        List<OkHttpUtils.Param>params = buildPostUrlParam(title,content,user_id);
+    public void sendPost(String group_id, String title,String content,String user_id,final OnSendPostListener listener){
         String url = PostUrls.POST_LIST;
         OkHttpUtils.ResultCallback<String> sendPostCallback = new OkHttpUtils.ResultCallback<String>() {
             @Override
@@ -64,26 +61,25 @@ public class PostModelImpl implements PostModel{
             }
             @Override
             public void onFailure(Exception e) {
-                listener.onFailure("send post list failed",e);
+                listener.onFailure("贴子发表失败",e);
             }
         };
-        OkHttpUtils.post(url,params,sendPostCallback);
+        // 组成post表单
+        List<Param> post_params = new ArrayList<>();
+        Param post_group = new Param("group", group_id);
+        Param post_title = new Param("title", title);
+        Param post_content = new Param("content", content);
+        Param post_user_id = new Param("user", user_id);
+        post_params.add(post_group);
+        post_params.add(post_title);
+        post_params.add(post_content);
+        post_params.add(post_user_id);
+        OkHttpUtils.post(url,post_params,sendPostCallback);
     }
-    private List<OkHttpUtils.Param> buildPostUrlParam(String title,String content,String user_id) {
-        OkHttpUtils.Param mtitle = new OkHttpUtils.Param("title",title);
-        OkHttpUtils.Param mcontent = new OkHttpUtils.Param("content",content);
-        OkHttpUtils.Param muser_id = new OkHttpUtils.Param("user",user_id);
-        List<OkHttpUtils.Param> params = new ArrayList<>();
-        params.add(mtitle);
-        params.add(mcontent);
-        params.add(muser_id);
-        return params;
 
-    }
     @Override
     public void sendPostComment(String post_id,String comment,String user_id,final OnSendPostCommentListener listener){
         String url = PostUrls.POST_DETAIL;
-        List<OkHttpUtils.Param> params = buildPosCommentUrl(post_id,comment,user_id);
         OkHttpUtils.ResultCallback<String> sendPostCommentCallback = new OkHttpUtils.ResultCallback<String>() {
             @Override
             public void onSuccess(String response) {
@@ -91,20 +87,17 @@ public class PostModelImpl implements PostModel{
             }
             @Override
             public void onFailure(Exception e) {
-                listener.onFailure("send postComment list failed",e);
+                listener.onFailure("评论发表失败",e);
             }
         };
-        OkHttpUtils.post(url,params,sendPostCommentCallback);
+        // 组成post表单
+        List<Param> comment_params = new ArrayList<>();
+        Param comment_post = new Param("post", post_id);
+        Param comment_content = new Param("comment", comment);
+        Param comment_user_id = new Param("user", user_id);
+        comment_params.add(comment_post);
+        comment_params.add(comment_content);
+        comment_params.add(comment_user_id);
+        OkHttpUtils.post(url,comment_params,sendPostCommentCallback);
     }
-    private List<OkHttpUtils.Param> buildPosCommentUrl(String post_id,String comment,String user_id){
-        List<OkHttpUtils.Param> params = new ArrayList<>();
-        OkHttpUtils.Param mpost_id = new OkHttpUtils.Param("post",post_id);
-        OkHttpUtils.Param mcomment = new OkHttpUtils.Param("comment",comment);
-        OkHttpUtils.Param muser_id = new OkHttpUtils.Param("user",user_id);
-        params.add(mpost_id);
-        params.add(mcomment);
-        params.add(muser_id);
-        return params;
-    }
-
 }
