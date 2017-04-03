@@ -13,4 +13,8 @@ public interface PostDetailView {
     void hideLoading();
 
     void addComment(List<PostCommentBean> postCommentBeen);
+
+    void queryAction();
+
+    void showFailMessage();
 }

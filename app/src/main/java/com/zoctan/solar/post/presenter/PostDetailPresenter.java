@@ -1,7 +1,5 @@
 package com.zoctan.solar.post.presenter;
 
-import android.content.Context;
-
 import com.zoctan.solar.beans.PostDetailBean;
 import com.zoctan.solar.post.model.PostModel;
 import com.zoctan.solar.post.model.PostModelImpl;
@@ -12,13 +10,11 @@ import com.zoctan.solar.post.view.PostDetailView;
  */
 
 public class PostDetailPresenter {
-    private Context mContext;
     private PostDetailView mPostDetailView;
     private PostModel mPostModel;
 
-    public PostDetailPresenter(Context context,PostDetailView postDetailView){
+    public PostDetailPresenter(PostDetailView postDetailView){
         this.mPostDetailView=postDetailView;
-        this.mContext=context;
         mPostModel=new PostModelImpl();
     }
     public void loadPostDetail(final String id){
@@ -39,6 +35,21 @@ public class PostDetailPresenter {
         @Override
         public void onFailure(final String msg,Exception e){
             mPostDetailView.hideLoading();
+        }
+    }
+
+
+    public void sendPostComment(String post_id,String comment,String user_id){
+        mPostModel.sendPostComment(post_id,comment,user_id,new OnSendPostCommentListener());
+    }
+    private class OnSendPostCommentListener implements PostModel.OnSendPostCommentListener{
+        @Override
+        public void onSuccess(){
+            mPostDetailView.queryAction();
+        }
+        @Override
+        public void onFailure(final String msg,Exception e){
+            mPostDetailView.showFailMessage();
         }
     }
 }

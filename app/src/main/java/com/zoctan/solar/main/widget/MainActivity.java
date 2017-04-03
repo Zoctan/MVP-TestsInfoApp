@@ -114,6 +114,24 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
             mHeaderText.setText("未登录");
         }
 
+        mSwitch = (Switch) mHeaderView.findViewById(R.id.switch_day_night);
+        mSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                    // 如果为日间模式
+                    if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
+                        // 将toggle置为night
+                        mSPUtils.putString("toggle", "night");
+                        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                        recreate();
+                    } else {
+                        // 将toggle置为day
+                        mSPUtils.putString("toggle", "day");
+                        getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                        recreate();
+                    }
+                }
+            });
         // 如果为日间模式
         if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
             // 将toggle置为day
@@ -228,20 +246,7 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
         startActivity(intent);
     }
 
-    // 切换日夜间模式
-    public void toggleClick(View view) {
-        // 如果为日间模式
-        if (Objects.equals(mSPUtils.getString("toggle"), "day")) {
-            // 将toggle置为night
-            mSPUtils.putString("toggle", "night");
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else {
-            // 将toggle置为day
-            mSPUtils.putString("toggle", "day");
-            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        }
-        this.recreate();
-    }
+
 
     // 双击退出
     public boolean onKeyDown(int keyCode, KeyEvent event) {

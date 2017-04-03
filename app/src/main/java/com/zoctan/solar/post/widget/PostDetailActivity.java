@@ -9,8 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zoctan.solar.R;
 import com.zoctan.solar.beans.PostBean;
@@ -68,7 +70,7 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
         // initialize Button
         initButton();
 
-        mPostDetailPresenter = new PostDetailPresenter(getApplication(), this);
+        mPostDetailPresenter = new PostDetailPresenter(this);
         onRefresh();
 
         // 将该Activity添加到ActivityCollector管理器中
@@ -170,8 +172,24 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
         mSwipeRefreshWidget.setRefreshing(false);
     }
     public void onClick(View view){
-        // do something.
+        EditText comment = (EditText)findViewById(R.id.add_comment);
+        String text = comment.getText().toString();
+        if(text.equals("")){
+            Toast.makeText(this,"comment can't be null",Toast.LENGTH_SHORT).show();
+            return;
+        }
+        mPostDetailPresenter.sendPostComment(mPost.getId()+"",text,mSPUtils.getString("userID"));
     }
+    public void queryAction(){
+        Toast.makeText(this,"Comment OK",Toast.LENGTH_SHORT).show();
+        EditText comment = (EditText)findViewById(R.id.add_comment);
+        comment.setText("");
+        onRefresh();
+    }
+    public void showFailMessage(){
+        Toast.makeText(this,"Comment on the post failed, please try again",Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void onRefresh(){
         if(mData != null){

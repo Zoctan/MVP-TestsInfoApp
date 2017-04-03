@@ -19,4 +19,16 @@ public interface PostModel {
         void onSuccess(PostDetailBean postDetailBean);
         void onFailure(String msg,Exception e);
     }
+
+    interface OnSendPostListener{
+        void onSuccess();
+        void onFailure(String msg,Exception e);
+    }
+    void sendPost(String title,String content,String user_id,OnSendPostListener listener);
+
+    interface OnSendPostCommentListener{
+        void onSuccess();
+        void onFailure(String msg,Exception e);
+    }
+    void sendPostComment(String post_id,String comment,String user_id,OnSendPostCommentListener listener);
 }

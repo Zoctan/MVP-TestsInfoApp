@@ -61,7 +61,6 @@
             android:gravity="center"
             android:text="@string/post"
             android:textColor="@android:color/white"
-            android:textSize="16sp"
-            android:onClick="addPost" />
+            android:textSize="16sp" />
     </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

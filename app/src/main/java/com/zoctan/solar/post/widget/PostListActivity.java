@@ -11,6 +11,7 @@ import com.zoctan.solar.utils.ImageLoaderUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import android.support.design.widget.Snackbar;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 
@@ -31,6 +33,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -41,7 +44,7 @@ import java.util.Objects;
  * Post列表实现类
  */
 
-public class PostListActivity extends SwipeBackActivity implements PostView,SwipeRefreshLayout.OnRefreshListener {
+public class PostListActivity extends SwipeBackActivity implements PostView,SwipeRefreshLayout.OnRefreshListener,android.support.v4.app.FragmentManager.OnBackStackChangedListener {
 
     private PostAdapter mAdapter;
     private RecyclerView mRecyclerView;
@@ -55,6 +58,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     private PostListActivity PostListActivitySelf = this;
     private int mGroupId;
     private SPUtils mSPUtils;
+    private FloatingActionButton fab;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,7 +75,6 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
 
         // 初始化控件
         initView();
-
         mPostPresenter = new PostPresenter(this);
 
         // 刷新
@@ -131,7 +134,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
 
         initImageView();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.post_list_fab);
+        fab = (FloatingActionButton) findViewById(R.id.post_list_fab);
 
         // 如果登录了就显示可发帖
         boolean mIsLogin = mSPUtils.getBoolean("Login");
@@ -140,12 +143,11 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         } else {
             fab.setVisibility(View.GONE);
         }
-        // 滚动监听 this is no need for now.
-        //mRecyclerView.addOnScrollListener(mOnScrollListener);
     }
 
     public void makePost(View view){
         mToolbar.setTitle(R.string.post);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.frame_content,new PostAddFragment(), "postFrame")
@@ -153,8 +155,14 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack("add")
                 .commit();
+        fab.setVisibility(View.GONE);
     }
-
+    @Override
+    public void onBackStackChanged() {
+        if(getSupportFragmentManager().getBackStackEntryCount()==0){
+            fab.setVisibility(View.VISIBLE);
+        }
+    }
     private void initImageView(){
         ImageView imageView = (ImageView) (findViewById(R.id.ivImage));
         ImageLoaderUtils.display(this, imageView,mGroup.getImgsrc());

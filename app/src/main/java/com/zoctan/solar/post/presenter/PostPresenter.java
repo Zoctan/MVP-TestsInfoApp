@@ -5,7 +5,8 @@ import com.zoctan.solar.beans.PostBean;
 import com.zoctan.solar.post.model.PostModel;
 import com.zoctan.solar.post.model.PostModelImpl;
 import com.zoctan.solar.post.view.PostView;
-import com.zoctan.solar.utils.LogUtils;
+import com.zoctan.solar.post.widget.PostAddFragment;
+
 
 import java.util.List;
 
@@ -17,12 +18,33 @@ public class PostPresenter {
 
     private PostView mPostView;
     private PostModel mPostModel;
+    private PostAddFragment mPostAddFragment;
 
     public PostPresenter(PostView postView){
         this.mPostView=postView;
         this.mPostModel=new PostModelImpl();
     }
-
+    public PostPresenter(PostAddFragment mPostAddFragment){
+        this.mPostAddFragment=mPostAddFragment;
+        this.mPostModel=new PostModelImpl();
+    }
+    public void sendPost(String title,String content,String user_id){
+        mPostAddFragment.showProcessBar();
+        OnSendPostListener listener= new OnSendPostListener();
+        mPostModel.sendPost(title,content,user_id,listener);
+    }
+    private class OnSendPostListener implements PostModel.OnSendPostListener{
+        @Override
+        public void onSuccess(){
+            mPostAddFragment.hideProcessBar();
+            mPostAddFragment.queryAction();
+        }
+        @Override
+        public void onFailure(String msg,Exception e){
+            mPostAddFragment.hideProcessBar();
+            mPostAddFragment.showFailedMessage();
+        }
+    }
     public void loadPost(final int groupId,final int pageIndex){
         String url = getUrl(groupId,pageIndex);
         if(pageIndex==0){
