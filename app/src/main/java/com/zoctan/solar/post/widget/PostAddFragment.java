@@ -63,6 +63,9 @@ public class PostAddFragment extends Fragment implements View.OnClickListener {
     public void queryAction(){
         ToastUtils.showShort(getContext(), "成功发帖");
         getActivity().getSupportFragmentManager().popBackStack();
+        // 调用父类activity的刷新方法
+        PostListActivity parentActivity = (PostListActivity) getActivity();
+        parentActivity.onRefresh();
     }
 
     public void showFailedMessage(){

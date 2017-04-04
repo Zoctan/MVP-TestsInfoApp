@@ -188,6 +188,7 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
         comment.setText("");
         onRefresh();
     }
+
     public void showFailMessage(){
         ToastUtils.showShort(this, "评论失败，请再试试？");
     }
@@ -199,6 +200,7 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
         }
         mPostDetailPresenter.loadPostDetail(mPost.getId());
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();

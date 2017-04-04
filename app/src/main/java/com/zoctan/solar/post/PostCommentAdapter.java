@@ -22,7 +22,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class PostCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private List<PostCommentBean> mData;
-    private String TAG = "PostCommentAdapter";
     private Context mContext;
 
     public PostCommentAdapter(Context context){
@@ -35,13 +34,11 @@ public class PostCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,int viewType){
-        LogUtils.d(TAG,"为Item创建视图");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_comment,parent,false);
         return new ItemViewHolder(view);
     }
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position){
-        LogUtils.d(TAG,"将数据绑定到Item的视图");
         if(holder instanceof ItemViewHolder){
             PostCommentBean comment = mData.get(position);
             if(comment == null){

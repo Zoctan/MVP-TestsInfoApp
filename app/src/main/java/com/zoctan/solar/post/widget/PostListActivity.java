@@ -236,10 +236,12 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         mAdapter.isShowFooter(false);
         mSwipeRefreshWidget.setRefreshing(true);
     }
+
     @Override
     public void hideLoading(){
         mSwipeRefreshWidget.setRefreshing((false));
     }
+
     @Override
     public void onRefresh(){
         pageIndex=0;
@@ -248,6 +250,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         }
         mPostPresenter.loadPost(mGroupId,pageIndex);
     }
+
     @Override
     public void showLoadFailMsg(){
         if(pageIndex == 0) {
