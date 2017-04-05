@@ -99,7 +99,7 @@ public class TestDetailActivity extends SwipeBackActivity implements TestDetailV
         // 设置扩张时的标题颜色
         collapsingToolbar.setExpandedTitleColor(Color.WHITE);
         // 设置收缩时的标题颜色
-        collapsingToolbar.setCollapsedTitleTextColor(Color.BLACK);
+        collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
 
         // 调用Glide加载封面图片
         ImageLoaderUtils.display(getApplicationContext(), (ImageView) findViewById(R.id.ivImage), mTest.getImgsrc());

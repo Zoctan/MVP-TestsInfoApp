@@ -103,7 +103,7 @@ public class TestListFragment extends Fragment implements TestView, SwipeRefresh
         // 最后一个可见的item
         private int lastVisibleItem;
 
-        // 监听屏幕滚动的item的数量
+        // 监听屏幕滚动的item的位置
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
