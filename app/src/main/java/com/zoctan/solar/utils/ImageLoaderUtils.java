@@ -21,9 +21,9 @@ public class ImageLoaderUtils {
                 // 跳过缓存至内存, 默认缓存在磁盘
                 .skipMemoryCache(true)
                 // 设置加载之前的默认图片
-                .placeholder(R.drawable.ic_image_loading)
+                .placeholder(R.mipmap.ic_image)
                 // 设置加载失败的默认图片
-                .error(R.drawable.ic_image_loadfail)
+                .error(R.mipmap.ic_broken)
                 // 设置淡入淡出效果，默认300ms
                 .crossFade()
                 // 填充至view中

@@ -51,7 +51,7 @@
             <de.hdodenhof.circleimageview.CircleImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/header_image"
-                android:src="@drawable/protrait"
+                android:src="@mipmap/ic_user"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 app:civ_border_width="2dp"
@@ -97,7 +97,7 @@
                 android:layout_width="24dp"
                 android:layout_height="22dp"
                 android:layout_gravity="left|center_vertical"
-                android:background="@drawable/login_password" />
+                android:background="@mipmap/ic_password" />
 
             <!--密码框-->
             <EditText
@@ -116,12 +116,12 @@
             <!--显示密码-->
             <Button
                 android:id="@+id/bt_pwd_eye"
-                android:layout_width="25dp"
-                android:background="@drawable/button_eye"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@mipmap/ic_eye"
                 android:layout_gravity="right|center_vertical"
                 android:layout_marginRight="10dp"
-                android:visibility="visible"
-                android:layout_height="15dp" />
+                android:visibility="visible" />
         </FrameLayout>
 
         <!--新密码层-->
@@ -138,7 +138,7 @@
                 android:layout_width="24dp"
                 android:layout_height="22dp"
                 android:layout_gravity="left|center_vertical"
-                android:background="@drawable/login_password" />
+                android:background="@mipmap/ic_password" />
 
             <!--密码框-->
             <EditText

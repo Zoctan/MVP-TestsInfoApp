@@ -1,14 +1,17 @@
 package com.zoctan.solar.user.widget;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.zoctan.solar.R;
@@ -16,6 +19,7 @@ import com.zoctan.solar.beans.UserBean;
 import com.zoctan.solar.user.presenter.UserLoginPresenter;
 import com.zoctan.solar.user.view.UserLoginView;
 import com.zoctan.solar.utils.ActivityCollector;
+import com.zoctan.solar.utils.CodeUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
 import com.zoctan.solar.utils.ToastUtils;
@@ -26,13 +30,15 @@ import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 public class UserLoginActivity extends SwipeBackActivity implements UserLoginView, View.OnClickListener {
 
-    private EditText mEtName, mEtPassword, mEtPassword2;
+    private EditText mEtName, mEtPassword, mEtPassword2, mEtProve;
     private Button mBtnLogin, mBtnRegister, mBtnBack, mBtnEye;
     private ProgressBar mPbLoading;
     private UserLoginPresenter mUserLoginPresenter;
     private SPUtils mSPUtils;
+    private CodeUtils mCodeUtils;
     private Toolbar mToolbar;
     private FrameLayout mRegisterLayout;
+    private ImageView mImgProve;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,18 +79,24 @@ public class UserLoginActivity extends SwipeBackActivity implements UserLoginVie
                 onBackPressed();
             }
         });
+
         // 初始化输入框和层
         mEtName = (EditText) findViewById(R.id.login_name);
         mEtPassword = (EditText) findViewById(R.id.login_password);
         mRegisterLayout = (FrameLayout) findViewById(R.id.register_layout);
         mRegisterLayout.setVisibility(View.GONE);
         mEtPassword2 = (EditText) findViewById(R.id.register_password);
+        mEtProve = (EditText) findViewById(R.id.et_prove);
         mPbLoading = (ProgressBar) findViewById(R.id.progressBar);
 
         // 获得SwipeBackLayout对象
         SwipeBackLayout mSwipeBackLayout = getSwipeBackLayout();
         // 设定可从上下左右滑动退出
         mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_ALL);
+
+        // 初始化验证码图片
+        mImgProve = (ImageView) findViewById(R.id.prove_img);
+        refresh(mImgProve);
 
         // 初始化按钮
         mBtnLogin = (Button) findViewById(R.id.btn_login);
@@ -146,25 +158,47 @@ public class UserLoginActivity extends SwipeBackActivity implements UserLoginVie
         String name = mEtName.getText().toString();
         String password = mEtPassword.getText().toString();
         String password2 = mEtPassword2.getText().toString();
+        String codeStr = mEtProve.getText().toString().trim();
         if(mBtnLogin.getText() == "注册") {
-            if(checkInput(name, password, password2)) {
+            if(checkInput(name, password, password2) && checkProve(codeStr)) {
                 mUserLoginPresenter.userAction("register", name, password);
             }
         }else {
-            if(checkInput(name, password)) {
+            if(checkInput(name, password) && checkProve(codeStr)) {
                 mUserLoginPresenter.userAction("login", name, password);
             }
+        }
+    }
+
+    public void refresh(View view) {
+        mCodeUtils = CodeUtils.getInstance();
+        Bitmap bitmap = mCodeUtils.createBitmap();
+        mImgProve.setImageBitmap(bitmap);
+    }
+
+    // 检查验证码
+    public boolean checkProve(String codeStr) {
+        if (codeStr == null || TextUtils.isEmpty(codeStr)) {
+            ToastUtils.showShort(this, "请输入验证码");
+            return false;
+        }
+        String code = mCodeUtils.getCode();
+        if (code.equalsIgnoreCase(codeStr)) {
+            return true;
+        } else {
+            ToastUtils.showShort(this, "验证码错误");
+            return false;
         }
     }
 
     // 检查输入
     public boolean checkInput(String name, String password) {
         // 用户名为空时提示
-        if (name == null || name.trim().equals("")) {
+        if (name == null || TextUtils.isEmpty(name)) {
             ToastUtils.showShort(this, "用户名不能为空");
         }else {
             // 密码为空时提示
-            if (password == null || password.trim().equals("")) {
+            if (password == null || TextUtils.isEmpty(password)) {
                 ToastUtils.showShort(this, "密码不能为空");
             } else {
                 return true;

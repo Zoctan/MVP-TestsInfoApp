@@ -30,6 +30,7 @@
     <string name="input_password2">请再次输入密码</string>
     <string name="input_password">请输入密码</string>
     <string name="input_name">请输入用户名</string>
+    <string name="input_prove">请输入验证码</string>
     <string name="back">返回</string>
     <string name="comment_zone">评论区</string>
     <string name="comment">评论</string>

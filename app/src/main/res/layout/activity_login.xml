@@ -26,9 +26,9 @@
             <!--用户图标-->
             <ImageView
                 android:layout_width="24dp"
-                android:layout_height="22dp"
+                android:layout_height="24dp"
                 android:layout_gravity="left|center_vertical"
-                android:background="@drawable/login_usr" />
+                android:background="@mipmap/ic_user" />
 
             <!--用户名框-->
             <EditText
@@ -38,8 +38,8 @@
                 android:layout_marginTop="5dp"
                 android:inputType="text"
                 android:paddingRight="60dp"
-                android:maxLength="25"
                 android:paddingLeft="30dp"
+                android:maxLength="25"
                 android:hint="@string/input_name"
                 android:textColorLink="@color/primary_light"
                 android:textColorHint="@color/secondary_text">
@@ -58,9 +58,9 @@
             <!--密码图标-->
             <ImageView
                 android:layout_width="24dp"
-                android:layout_height="22dp"
+                android:layout_height="24dp"
                 android:layout_gravity="left|center_vertical"
-                android:background="@drawable/login_password" />
+                android:background="@mipmap/ic_password" />
 
             <!--密码框-->
             <EditText
@@ -79,12 +79,12 @@
             <!--显示密码-->
             <Button
                 android:id="@+id/bt_pwd_eye"
-                android:layout_width="25dp"
-                android:background="@drawable/button_eye"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:background="@mipmap/ic_eye"
                 android:layout_gravity="right|center_vertical"
                 android:layout_marginRight="10dp"
-                android:visibility="visible"
-                android:layout_height="15dp" />
+                android:visibility="visible" />
         </FrameLayout>
 
         <!--注册密码层-->
@@ -100,31 +100,66 @@
             <!--密码图标-->
             <ImageView
                 android:layout_width="24dp"
-                android:layout_height="22dp"
+                android:layout_height="24dp"
                 android:layout_gravity="left|center_vertical"
-                android:background="@drawable/login_password" />
+                android:background="@mipmap/ic_password" />
 
             <!--密码框-->
             <EditText
                 android:id="@+id/register_password"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/input_password2"
                 android:inputType="textPassword"
-                android:paddingRight="60dp"
                 android:maxLength="25"
                 android:paddingLeft="30dp"
-                android:hint="@string/input_password2"
-                android:textColorLink="@color/primary_light"
-                android:textColorHint="@color/secondary_text">
-            </EditText>
+                android:paddingRight="60dp"
+                android:textColorHint="@color/secondary_text"
+                android:textColorLink="@color/primary_light" />
         </FrameLayout>
 
-        <!--登录-->
+        <!--验证码层-->
+        <FrameLayout
+            android:id="@+id/prove_layout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/register_layout"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:visibility="visible">
+
+            <!--验证码图标-->
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="left|center_vertical"
+                android:background="@mipmap/ic_prove" />
+
+            <!--验证码输入框-->
+            <EditText
+                android:id="@+id/et_prove"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="30dp"
+                android:paddingRight="60dp"
+                android:hint="@string/input_prove" />
+
+            <!--验证码图片-->
+            <ImageView
+                android:id="@+id/prove_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:src="@mipmap/ic_launcher"
+                android:onClick="refresh"/>
+        </FrameLayout>
+
+        <!--登录按钮-->
         <Button
             android:id="@+id/btn_login"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/register_layout"
+            android:layout_below="@id/prove_layout"
             android:layout_marginTop="30dp"
             android:background="@color/primary"
             android:textColor="@android:color/white"
