@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -175,7 +176,7 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
     public void onClick(View view){
         EditText comment = (EditText)findViewById(R.id.add_comment);
         String text = comment.getText().toString();
-        if(text.equals("")){
+        if(TextUtils.isEmpty(text)){
             ToastUtils.showShort(this, "评论内容不能为空哦~");
             return;
         }
