@@ -10,4 +10,6 @@ public interface MainView {
     void switch2About();
 
     void switch2Group();
+
+    void switch2Clean();
 }

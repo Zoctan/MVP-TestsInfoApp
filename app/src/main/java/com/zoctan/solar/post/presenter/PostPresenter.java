@@ -32,6 +32,10 @@ public class PostPresenter {
         OnSendPostListener listener= new OnSendPostListener();
         mPostModel.sendPost(group_id, title,content,user_id,listener);
     }
+    public void addGroup(String group_id, String user_id){
+        OnAddGroupListener listener= new OnAddGroupListener();
+        mPostModel.addGroup(group_id, user_id, listener);
+    }
     private class OnSendPostListener implements PostModel.OnSendPostListener{
         @Override
         public void onSuccess(){
@@ -61,6 +65,17 @@ public class PostPresenter {
         public void onSuccess(List<PostBean> list){
             mPostView.hideLoading();
             mPostView.addPost(list);
+        }
+        @Override
+        public void onFailure(String msg,Exception e){
+            mPostView.hideLoading();
+            mPostView.showLoadFailMsg();
+        }
+    }
+    private class OnAddGroupListener implements PostModel.OnAddGroupListener{
+        @Override
+        public void onSuccess(){
+            mPostView.showAddGroupSuccess();
         }
         @Override
         public void onFailure(String msg,Exception e){

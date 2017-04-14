@@ -7,18 +7,33 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.design.internal.NavigationMenu;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.method.HideReturnsTransformationMethod;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.zoctan.solar.R;
+import com.zoctan.solar.api.PostUrls;
+import com.zoctan.solar.beans.PostBean;
 import com.zoctan.solar.beans.UserBean;
+import com.zoctan.solar.post.PostAdapter;
+import com.zoctan.solar.post.widget.PostAddFragment;
+import com.zoctan.solar.post.widget.PostDetailActivity;
 import com.zoctan.solar.user.presenter.UserDetailPresenter;
 import com.zoctan.solar.user.view.UserDetailView;
 import com.zoctan.solar.utils.ActivityCollector;
@@ -30,20 +45,30 @@ import com.zoctan.solar.utils.SwipeBackActivity;
 import com.zoctan.solar.utils.ToastUtils;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 
 public class UserDetailActivity extends SwipeBackActivity implements UserDetailView, View.OnClickListener {
 
-    private Button mBtnLogout, mBtnImg, mBtnPwd, mBtnSure, mBtnEye;
+    private Button mBtnSure, mBtnEye;
     private EditText mEtOldPassword, mEtNewPassword;
-    private FrameLayout mOldLayout, mNewLayout;
+    private RelativeLayout mPwdLayout;
     private ProgressBar mPbLoading;
     private UserDetailPresenter mUserDetailPresenter;
     private SPUtils mSPUtils;
+    private RecyclerView mRecyclerView;
+    private String mHasGroup;
+    private LinearLayoutManager mLayoutManager;
+    private PostAdapter mAdapter;
     private Toolbar mToolbar;
+    private int pageIndex = 0;
+    private List<PostBean> mData;
     private CircleImageView userImg;
     private static String userName, userPassword;
     private SwipeBackLayout mSwipeBackLayout;
@@ -51,6 +76,9 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
     protected static final int TAKE_PICTURE = 1;
     private static final int CROP_SMALL_PICTURE = 2;
     protected static Uri tempUri;
+    private String mGroupId;
+    private TextView tvGroup;
+    private FrameLayout mFrameLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +95,9 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
         }
         // 设置登录要显示的视图
         setContentView(R.layout.activity_user);
-
+        mUserDetailPresenter = new UserDetailPresenter(this);
         // 初始化控件
         initView();
-
-        mUserDetailPresenter = new UserDetailPresenter(this);
 
         // 将该Activity添加到ActivityCollector管理器中
         ActivityCollector.addActivity(this);
@@ -90,6 +116,32 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
         mSPUtils = new SPUtils(this);
         userName = mSPUtils.getString("userName");
         userPassword = mSPUtils.getString("userPassword");
+
+        mFrameLayout = (FrameLayout) findViewById(R.id.frame_group);
+        tvGroup = (TextView) findViewById(R.id.tvGroup);
+        // 判断是否加入了小组
+        mHasGroup = mSPUtils.getString("userGroup");
+        if(!Objects.equals(mHasGroup, "null")) {
+            tvGroup.setText(R.string.group_new);
+            mRecyclerView = (RecyclerView) findViewById(R.id.recycle_view_postList);
+            // 固定RecyclerView大小
+            mRecyclerView.setHasFixedSize(true);
+            mLayoutManager = new LinearLayoutManager(this);
+            // 设置布局管理器
+            mRecyclerView.setLayoutManager(mLayoutManager);
+            // 设置item动画
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+            mAdapter = new PostAdapter(this);
+            // item点击监听
+            mAdapter.setOnItemClickListener(mOnItemClickListener);
+            // 设置适配器
+            mRecyclerView.setAdapter(mAdapter);
+            mUserDetailPresenter.loadPost(mHasGroup);
+        }else{
+            tvGroup.setText(R.string.no_group);
+        }
+
         // 初始化toolbar
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitle(user.getString("name"));
@@ -101,50 +153,64 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
                 onBackPressed();
             }
         });
-
         // 初始化密码输入框和层
         mEtOldPassword = (EditText) findViewById(R.id.old_password);
         mEtNewPassword = (EditText) findViewById(R.id.new_password);
-        mOldLayout = (FrameLayout) findViewById(R.id.old_layout);
-        mNewLayout = (FrameLayout) findViewById(R.id.new_layout);
-
-        mPbLoading = (ProgressBar) findViewById(R.id.progressBar);
+        mPwdLayout = (RelativeLayout) findViewById(R.id.pwd_layout);
+        mPbLoading = (ProgressBar) findViewById(R.id.progress);
 
         // 获得SwipeBackLayout对象
         mSwipeBackLayout = getSwipeBackLayout();
         // 设定可从左滑动退出
         mSwipeBackLayout.setEdgeTrackingEnabled(SwipeBackLayout.EDGE_LEFT);
-
         // 初始化按钮
         mBtnSure = (Button) findViewById(R.id.btn_sure);
         mBtnSure.setVisibility(View.INVISIBLE);
-        mBtnLogout = (Button) findViewById(R.id.btn_logout);
-        mBtnImg = (Button) findViewById(R.id.btn_img);
-        mBtnPwd = (Button) findViewById(R.id.btn_pwd);
         mBtnEye = (Button) findViewById(R.id.bt_pwd_eye);
         // 监听界面上的按钮
         mBtnSure.setOnClickListener(this);
-        mBtnLogout.setOnClickListener(this);
-        mBtnImg.setOnClickListener(this);
-        mBtnPwd.setOnClickListener(this);
         mBtnEye.setOnClickListener(this);
+
+        // 浮动按钮
+        FabSpeedDial fabSpeedDial = (FabSpeedDial) findViewById(R.id.fab_speed_dial);
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+                getMenuInflater().inflate(R.menu.menu_user,navigationMenu);
+                // 对菜单项目初始化
+                // 如果不初始化就返回false
+                return true;
+            }
+        });
+
+        fabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem item) {
+                switch (item.getItemId()){
+                    // 修改头像
+                    case R.id.action_img:
+                        modifyImg();
+                        break;
+                    // 修改密码
+                    case R.id.action_pwd:
+                        modifyPwd();
+                        break;
+                    // 退出小组
+                    case R.id.action_out_group:
+                        outGroup();
+                        break;
+                    // 退出
+                    case R.id.action_logout:
+                        userLogout();
+                        break;
+                }
+                return false;
+            }});
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            // 点击退出按钮
-            case R.id.btn_logout:
-                userLogout();
-                break;
-            // 点击修改头像按钮
-            case R.id.btn_img:
-                modifyImg(v);
-                break;
-            // 点击修改密码按钮
-            case R.id.btn_pwd:
-                modifyPwd();
-                break;
             case R.id.btn_sure:
                 clickSure();
                 break;
@@ -156,10 +222,16 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
         }
     }
 
+    // 退出小组
+    public void outGroup(){
+        String user_id = mSPUtils.getString("userID");
+        mUserDetailPresenter.outGroup(user_id);
+    }
+
     // 修改密码操作
     public void modifyPwd() {
-        mOldLayout.setVisibility(View.VISIBLE);
-        mNewLayout.setVisibility(View.VISIBLE);
+        mFrameLayout.setVisibility(View.GONE);
+        mPwdLayout.setVisibility(View.VISIBLE);
         mBtnSure.setVisibility(View.VISIBLE);
     }
 
@@ -173,6 +245,7 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
         }else {
             ToastUtils.showShort(this, "原密码不正确");
         }
+        mFrameLayout.setVisibility(View.VISIBLE);
     }
 
     // 显示密码
@@ -185,7 +258,7 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
     }
 
     // 显示修改头像的对话框
-    public void modifyImg(View view) {
+    public void modifyImg() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("设置头像");
         String[] items = { "选择本地照片", "拍照" };
@@ -208,8 +281,7 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
                         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, tempUri);
                         startActivityForResult(openCameraIntent, TAKE_PICTURE);
                         break;
-                }
-            }
+                }    }
         });
         builder.create().show();
     }
@@ -298,6 +370,41 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
     }
 
     @Override
+    public void addPost(List<PostBean>postList){
+        mAdapter.isShowFooter(true);
+        if(mData == null){
+            mData = new ArrayList<>();
+        }
+        mData.addAll(postList);
+        if(pageIndex == 0) {
+            mAdapter.setmDate(mData);
+        } else {
+            // 如果没有更多数据,则隐藏footer布局
+            if(postList.size() == 0) {
+                mAdapter.isShowFooter(false);
+            }
+            // 处理的数据发生变化,通知View作出改变
+            mAdapter.notifyDataSetChanged();
+        }
+        // 改变API网址start参数
+        pageIndex += PostUrls.PAGE_SIZE;
+        mAdapter.notifyDataSetChanged();
+    }
+
+    private PostAdapter.OnItemClickListener mOnItemClickListener = new PostAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(View view, int position) {
+            if (mData.size() <= 0) {
+                return;
+            }
+            PostBean post = mAdapter.getItem(position);
+            Intent intent = new Intent(getApplicationContext(), PostDetailActivity.class);
+            intent.putExtra("post", post);
+            startActivity(intent);
+        }
+    };
+
+    @Override
     public void showFailMsg() {
         ToastUtils.showShort(this, "修改失败");
     }
@@ -310,6 +417,12 @@ public class UserDetailActivity extends SwipeBackActivity implements UserDetailV
     @Override
     public void hideLoading() {
         mPbLoading.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void showOutGroupSuccess() {
+        ToastUtils.showLong(this, "已退出小组！");
+        mSPUtils.putString("userGroup", "null");
     }
 
     @Override

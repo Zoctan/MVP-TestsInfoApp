@@ -13,4 +13,6 @@ public interface PostView {
     void hideLoading();
     // 若加载数据失败，如无网络连接，则需要给用户提示信息
     void showLoadFailMsg();
+    // 加入小组成功
+    void showAddGroupSuccess();
 }

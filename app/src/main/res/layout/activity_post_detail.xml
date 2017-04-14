@@ -2,7 +2,6 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -93,7 +92,7 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/RelativeLayout"
                         android:layout_marginTop="8dp"
-                        android:textColor="@color/secondary_text"
+                        android:textColor="@color/primary_text"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="8dp"
                         android:text="@string/comment_zone" />
@@ -116,13 +115,13 @@
                         android:background="@color/divider" />
 
                     <RelativeLayout
-                        android:layout_marginTop="10dp"
                         android:id="@+id/add_comment_layout"
-                        android:layout_below="@+id/comment_divider"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
-                        android:layout_marginRight="8dp"
+                        android:layout_below="@+id/comment_divider"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="10dp"
                         android:gravity="center">
 
                         <EditText
@@ -145,10 +144,11 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_below="@id/add_comment"
+                            android:layout_marginBottom="@dimen/coordinator_layout_offset"
                             android:background="@color/primary"
-                            android:textColor="@android:color/white"
                             android:gravity="center"
                             android:text="@string/comment"
+                            android:textColor="@android:color/white"
                             android:textSize="16sp" />
                     </RelativeLayout>
 

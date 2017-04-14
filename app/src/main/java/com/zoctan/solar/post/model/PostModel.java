@@ -13,6 +13,13 @@ public interface PostModel {
         void onFailure(String msg,Exception e);
     }
 
+    void addGroup(String group_id, String user_id, OnAddGroupListener listener);
+
+    interface OnAddGroupListener{
+        void onSuccess();
+        void onFailure(String msg,Exception e);
+    }
+
     void loadPostDetail(String id, OnLoadPostDetailListener listener);
 
     interface OnLoadPostDetailListener{

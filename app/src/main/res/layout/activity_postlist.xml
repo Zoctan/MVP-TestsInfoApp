@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -13,8 +12,6 @@
         android:fitsSystemWindows="true"
         android:layout_height="200dp">
 
-        <!-- app:expandedTitleMarginStart="10dp" 设置扩张时候(还没有收缩时)title离屏幕左边的距离
-             app:contentScrim="?attr/colorPrimary" 设置当完全CollapsingToolbarLayout折叠(收缩)后的背景颜色 -->
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
@@ -27,11 +24,7 @@
             app:expandedTitleMarginStart="100dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:expandedTitleGravity="bottom">
-            <!--app:expandedTitleTextAppearance="@android:style/TextAppearance.DeviceDefault.Medium" -->
-            <!-- layout_collapseMode(折叠模式)-有两个值:
-                 1.parallax:在内容滚动时，CollapsingToolbarLayout中的View（比如ImageView)也可以同时滚动，
-                        实现视差滚动效果，通常和layout_collapseParallaxMultiplier(设置视差因子)搭配使用。
-                 2.pin:当CollapsingToolbarLayout完全收缩后，Toolbar还可以固定在屏幕上。-->
+
             <ImageView
                 android:id="@+id/ivImage"
                 android:layout_width="match_parent"
@@ -41,14 +34,13 @@
                 android:scaleType="centerCrop"
                 app:layout_collapseMode="parallax"
                 app:layout_collapseParallaxMultiplier="0.5" />
+
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin" />
         </android.support.design.widget.CollapsingToolbarLayout>
-
-
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.SwipeRefreshLayout
@@ -66,29 +58,30 @@
             android:paddingTop="@dimen/card_margin"
             android:scrollbars="vertical">
         </android.support.v7.widget.RecyclerView>
-
     </android.support.v4.widget.SwipeRefreshLayout>
-
 
     <FrameLayout
         android:id="@+id/frame_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/appbar"
-        android:scrollbars="none"
+        android:background="@android:color/background_light"
         android:elevation="5dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:scrollbars="none"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" >
+    </FrameLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/post_list_fab"
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/fab_speed_dial"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add_circle_white_24dp"
-        app:backgroundTint="@color/primary_dark"
-        app:layout_anchor="@id/swipe_refresh_widget_post_list"
-        app:layout_anchorGravity="bottom|right|end"
-        android:onClick="makePost" />
+        android:layout_gravity="bottom|end"
+        app:fabGravity="bottom_end"
+        app:fabBackgroundTint="@android:color/holo_purple"
+        app:fabMenu="@menu/menu_group"
+        app:miniFabBackgroundTint="@android:color/white"
+        app:miniFabDrawableTint="?attr/colorPrimaryDark"
+        app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
 
 </android.support.design.widget.CoordinatorLayout>

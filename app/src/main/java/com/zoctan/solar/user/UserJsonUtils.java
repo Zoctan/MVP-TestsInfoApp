@@ -22,8 +22,6 @@ public class UserJsonUtils {
             JsonObject jsonObj = parser.parse(res).getAsJsonObject();
             // 将Json对象转换为User实体
             userBean = JsonUtils.deserialize(jsonObj, UserBean.class);
-
-            //LogUtils.d("查看User对象", JsonUtils.serialize(userBean));
         } catch (Exception e) {
             LogUtils.e(TAG, "将JSON转换为User对象发生错误" , e);
         }

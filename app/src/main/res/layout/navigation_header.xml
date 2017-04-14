@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="?attr/colorPrimaryDark"
     android:gravity="center"
@@ -33,8 +34,12 @@
         android:id="@+id/switch_day_night"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:checked="false"
+        android:showText="true"
+        android:splitTrack="true"
+        android:textAllCaps="false"
+        android:textColor="@color/primary_text"
         android:textOff="@string/toggle_day"
         android:textOn="@string/toggle_night"
-        android:textSize="12sp"
-        android:showText="true" />
+        android:textSize="12sp" />
 </RelativeLayout>

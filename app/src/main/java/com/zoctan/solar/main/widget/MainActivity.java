@@ -2,16 +2,21 @@ package com.zoctan.solar.main.widget;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.os.EnvironmentCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
@@ -30,7 +35,9 @@ import com.zoctan.solar.main.presenter.MainPresenter;
 import com.zoctan.solar.main.view.MainView;
 import com.zoctan.solar.test.widget.TestFragment;
 import com.zoctan.solar.utils.ActivityCollector;
+import com.zoctan.solar.utils.DataCleanManager;
 import com.zoctan.solar.utils.ImageLoaderUtils;
+import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.ToastUtils;
 
@@ -57,16 +64,12 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
         super.onCreate(savedInstanceState);
         // 设置主界面要显示的视图
         setContentView(R.layout.activity_main);
-
         // 初始化控件
         initView();
-
         // 主界面业务处理实体化
         mMainPresenter = new MainPresenter(this);
-
         // 显示Test列表
         switch2Test();
-
         // 将该Activity添加到ActivityCollector管理器中
         ActivityCollector.addActivity(this);
     }
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
         NavigationView mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         setupDrawerContent(mNavigationView);
 
-        // 获取头布局文件
+        // 获取侧滑栏头布局文件
         View mHeaderView = mNavigationView.getHeaderView(0);
         Switch mSwitch = (Switch) mHeaderView.findViewById(R.id.switch_day_night);
         TextView mHeaderText = (TextView) mHeaderView.findViewById(R.id.header_text);
@@ -111,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
             // 显示用户名
             mHeaderText.setText(userName);
         }else {
+            mHeaderImage.setImageResource(R.mipmap.ic_user);
             mHeaderText.setText("未登录");
         }
 
@@ -134,13 +138,12 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
                     // 将toggle置为night
                     mSPUtils.putString("toggle", "night");
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                    recreate();
                 } else {
                     // 将toggle置为day
                     mSPUtils.putString("toggle", "day");
                     getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                    recreate();
                 }
+                recreate();
             }
         });
 
@@ -162,15 +165,13 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
                     || Objects.equals(intent.getAction(), "modifyImg")) {
                 // 重新初始化界面
                 initView();
-            }
-        }
-    };
+            } } };
 
     // 初始化菜单，其中menu参数就是即将要显示的Menu实例。
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        // 返回true则显示该menu,false 则不显示
+        getMenuInflater().inflate(R.menu.navigation_menu, menu);
+
         return true;
     }
 
@@ -217,6 +218,33 @@ public class MainActivity extends AppCompatActivity implements MainView,View.OnC
         // 关于栏
         replaceFragment(new AboutFragment(),"aboutFrame");
         mToolbar.setTitle(R.string.navigation_about);
+    }
+
+    @Override
+    public void switch2Clean() {
+        // 清理缓存
+        new AlertDialog.Builder(this)
+            .setTitle("共" + DataCleanManager.getCacheSize(getApplicationContext().getCacheDir())
+                    + "，确定清理吗？")
+            .setIcon(android.R.drawable.ic_delete)
+            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // 点击“确认”后的操作
+                DataCleanManager.cleanAllData(getApplicationContext());
+                ToastUtils.showShort(getApplicationContext(), "缓存已清理");
+                // 重启APP
+                Intent i = getApplicationContext().getPackageManager()
+                        .getLaunchIntentForPackage(getApplicationContext().getPackageName());
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }})
+
+            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // 点击“返回”后的操作,这里不设置任何操作
+            }}).show();
     }
     
     private void replaceFragment(Fragment fragment, String tag) {

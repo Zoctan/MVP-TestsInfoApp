@@ -29,6 +29,10 @@ public class MainPresenter {
             case R.id.navigation_item_about:
                 mMainView.switch2About();
                 break;
+            // 清理缓存
+            case R.id.navigation_item_clean:
+                mMainView.switch2Clean();
+                break;
             // 默认众评
             default:
                 mMainView.switch2Test();

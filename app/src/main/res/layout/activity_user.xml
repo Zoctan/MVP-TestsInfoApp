@@ -60,146 +60,165 @@
                 android:layout_gravity="bottom|start"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="3dp"
-                android:onClick="modifyImg" />
-
+                android:layout_marginBottom="3dp" />
         </android.support.design.widget.CollapsingToolbarLayout>
-
-
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout
+    <FrameLayout
+        android:id="@+id/user_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="bottom"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp" >
+        android:layout_height="460dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <ProgressBar
-            style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/progressBar"
-            android:visibility="invisible" />
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-        <!--原密码层-->
-        <FrameLayout
-            android:id="@+id/old_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:gravity="center"
-            android:visibility="invisible" >
-
-            <!--密码图标-->
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="22dp"
-                android:layout_gravity="left|center_vertical"
-                android:background="@mipmap/ic_password" />
-
-            <!--密码框-->
-            <EditText
-                android:id="@+id/old_password"
-                android:layout_width="fill_parent"
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:paddingRight="60dp"
-                android:maxLength="25"
-                android:paddingLeft="30dp"
-                android:hint="@string/old_password"
-                android:textColorLink="@color/primary_light"
-                android:textColorHint="@color/secondary_text">
-            </EditText>
+                android:layout_gravity="center"
+                android:visibility="invisible" />
 
-            <!--显示密码-->
-            <Button
-                android:id="@+id/bt_pwd_eye"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:background="@mipmap/ic_eye"
-                android:layout_gravity="right|center_vertical"
-                android:layout_marginRight="10dp"
-                android:visibility="visible" />
-        </FrameLayout>
+            <RelativeLayout
+                android:id="@+id/pwd_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:visibility="gone">
+                <!--原密码层-->
+                <RelativeLayout
+                    android:id="@+id/old_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp">
 
-        <!--新密码层-->
+                    <!--密码图标-->
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@mipmap/ic_password">
+
+                    </ImageView>
+
+                    <!--密码框-->
+                    <EditText
+                        android:id="@+id/old_password"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/old_password"
+                        android:inputType="textPassword"
+                        android:maxLength="25"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="60dp"
+                        android:textColorHint="@color/secondary_text"
+                        android:textColorLink="@color/primary_light">
+
+                    </EditText>
+
+                    <!--显示密码-->
+                    <Button
+                        android:id="@+id/bt_pwd_eye"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_alignRight="@+id/old_password"
+                        android:layout_marginRight="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@mipmap/ic_eye" />
+                </RelativeLayout>
+
+                <!--新密码层-->
+                <RelativeLayout
+                    android:id="@+id/new_layout"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/old_layout"
+                    android:layout_marginBottom="20dp"
+                    android:visibility="visible">
+
+                    <!--密码图标-->
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@mipmap/ic_password">
+
+                    </ImageView>
+
+                    <!--密码框-->
+                    <EditText
+                        android:id="@+id/new_password"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/new_password"
+                        android:inputType="textPassword"
+                        android:maxLength="25"
+                        android:paddingLeft="30dp"
+                        android:paddingRight="60dp"
+                        android:textColorHint="@color/secondary_text"
+                        android:textColorLink="@color/primary_light">
+
+                    </EditText>
+
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/btn_sure"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/new_layout"
+                    android:background="@color/danger"
+                    android:text="@string/sure_pwd"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    android:visibility="visible" />
+            </RelativeLayout>
+        </LinearLayout>
+
         <FrameLayout
-            android:id="@+id/new_layout"
-            android:layout_width="fill_parent"
+            android:id="@+id/frame_group"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:gravity="center"
-            android:visibility="invisible">
+            android:elevation="5dp"
+            android:scrollbars="none"
+            android:visibility="visible">
 
-            <!--密码图标-->
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="22dp"
-                android:layout_gravity="left|center_vertical"
-                android:background="@mipmap/ic_password" />
-
-            <!--密码框-->
-            <EditText
-                android:id="@+id/new_password"
-                android:layout_width="fill_parent"
+            <TextView
+                android:id="@+id/tvGroup"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:paddingRight="60dp"
-                android:maxLength="25"
-                android:paddingLeft="30dp"
-                android:hint="@string/new_password"
-                android:textColorLink="@color/primary_light"
-                android:textColorHint="@color/secondary_text">
-            </EditText>
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/no_group"
+                android:textColor="@color/primary_text" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycle_view_postList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:paddingTop="@dimen/card_margin"
+                android:scrollbars="vertical" />
         </FrameLayout>
+    </FrameLayout>
 
-        <Button
-            android:id="@+id/btn_sure"
-            android:text="@string/sure_pwd"
-            android:layout_marginBottom="20dp"
-            android:background="@color/danger"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:visibility="invisible" />
-
-        <Button
-            android:id="@+id/btn_pwd"
-            android:text="@string/user_pwd"
-            android:layout_marginBottom="20dp"
-            android:background="@color/danger"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/btn_img"
-            android:text="@string/user_img"
-            android:layout_marginBottom="20dp"
-            android:background="@color/danger"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-
-        <Button
-            android:id="@+id/btn_logout"
-            android:text="@string/logout"
-            android:layout_marginBottom="20dp"
-            android:background="@color/danger"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
+    <io.github.yavski.fabspeeddial.FabSpeedDial
+        android:id="@+id/fab_speed_dial"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        app:fabBackgroundTint="@android:color/holo_orange_light"
+        app:fabGravity="bottom_end"
+        app:fabMenu="@menu/menu_user"
+        app:miniFabBackgroundTint="@android:color/white"
+        app:miniFabDrawableTint="?attr/colorPrimaryDark"
+        app:miniFabTitleTextColor="?attr/colorPrimaryDark" />
 </android.support.design.widget.CoordinatorLayout>

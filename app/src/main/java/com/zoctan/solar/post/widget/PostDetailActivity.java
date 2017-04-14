@@ -174,15 +174,16 @@ public class PostDetailActivity extends SwipeBackActivity implements View.OnClic
     }
 
     public void onClick(View view){
-        EditText comment = (EditText)findViewById(R.id.add_comment);
+        EditText comment = (EditText) findViewById(R.id.add_comment);
         String text = comment.getText().toString();
         if(TextUtils.isEmpty(text)){
             ToastUtils.showShort(this, "评论内容不能为空哦~");
-            return;
+        }else{
+            String user_id = mSPUtils.getString("userID");
+            mPostDetailPresenter.sendPostComment(mPost.getId(),text,user_id);
         }
-        String user_id = mSPUtils.getString("userID");
-        mPostDetailPresenter.sendPostComment(mPost.getId()+"",text,user_id);
     }
+
     public void queryAction(){
         ToastUtils.showShort(this, "成功评论");
         EditText comment = (EditText)findViewById(R.id.add_comment);

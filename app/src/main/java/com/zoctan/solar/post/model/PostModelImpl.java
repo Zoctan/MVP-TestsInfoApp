@@ -1,5 +1,6 @@
 package com.zoctan.solar.post.model;
 
+import com.zoctan.solar.api.GroupUrls;
 import com.zoctan.solar.api.PostUrls;
 import com.zoctan.solar.beans.PostBean;
 import com.zoctan.solar.beans.PostDetailBean;
@@ -53,7 +54,7 @@ public class PostModelImpl implements PostModel{
     }
 
     @Override
-    public void sendPost(String group_id, String title,String content,String user_id,final OnSendPostListener listener){
+    public void sendPost(final String group_id, final String title,final String content,final String user_id,final OnSendPostListener listener){
         String url = PostUrls.POST_LIST;
         OkHttpUtils.ResultCallback<String> sendPostCallback = new OkHttpUtils.ResultCallback<String>() {
             @Override
@@ -79,7 +80,7 @@ public class PostModelImpl implements PostModel{
     }
 
     @Override
-    public void sendPostComment(String post_id,String comment,String user_id,final OnSendPostCommentListener listener){
+    public void sendPostComment(final String post_id,final String comment,final String user_id,final OnSendPostCommentListener listener){
         String url = PostUrls.POST_DETAIL;
         OkHttpUtils.ResultCallback<String> sendPostCommentCallback = new OkHttpUtils.ResultCallback<String>() {
             @Override
@@ -101,4 +102,27 @@ public class PostModelImpl implements PostModel{
         comment_params.add(comment_user_id);
         OkHttpUtils.post(url,comment_params,sendPostCommentCallback);
     }
+
+    @Override
+    public void addGroup(final String group_id, final String user_id, final OnAddGroupListener listener){
+        String url = GroupUrls.POST_LIST;
+        OkHttpUtils.ResultCallback<String> addGroupCallback = new OkHttpUtils.ResultCallback<String>() {
+            @Override
+            public void onSuccess(String response) {
+                listener.onSuccess();
+            }
+            @Override
+            public void onFailure(Exception e) {
+                listener.onFailure("加入小组失败",e);
+            }
+        };
+        // 组成post表单
+        List<Param> add_params = new ArrayList<>();
+        Param group = new Param("group_id", group_id);
+        Param user = new Param("user", user_id);
+        add_params.add(group);
+        add_params.add(user);
+        OkHttpUtils.post(url,add_params,addGroupCallback);
+    }
+
 }

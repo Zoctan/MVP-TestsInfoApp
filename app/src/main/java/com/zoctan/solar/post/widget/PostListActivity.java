@@ -10,18 +10,17 @@ import com.zoctan.solar.post.view.PostView;
 import com.zoctan.solar.utils.ImageLoaderUtils;
 import com.zoctan.solar.utils.SPUtils;
 import com.zoctan.solar.utils.SwipeBackActivity;
+import com.zoctan.solar.utils.ToastUtils;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 
@@ -31,14 +30,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.support.v7.widget.Toolbar;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.Toast;
-
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import io.github.yavski.fabspeeddial.FabSpeedDial;
+import io.github.yavski.fabspeeddial.SimpleMenuListenerAdapter;
 
 /**
  * Post列表实现类
@@ -58,7 +60,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
     private PostListActivity PostListActivitySelf = this;
     private int mGroupId;
     private SPUtils mSPUtils;
-    private FloatingActionButton fab;
+    private FabSpeedDial mFabSpeedDial;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +106,7 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         // 设置扩张时的标题颜色
         collapsingToolbar.setExpandedTitleColor(Color.WHITE);
         // 设置收缩时的标题颜色
-        collapsingToolbar.setCollapsedTitleTextColor(Color.BLACK);
+        collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
 
         mSwipeRefreshWidget = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_widget_post_list);
         // 设置刷新时动画的颜色，可以设置4个
@@ -131,22 +133,45 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         mRecyclerView.setAdapter(mAdapter);
 
         // setup the picture for cover page
-
         initImageView();
-
-        fab = (FloatingActionButton) findViewById(R.id.post_list_fab);
-
+        // 浮动按钮
+        mFabSpeedDial = (FabSpeedDial) this.findViewById(R.id.fab_speed_dial);
         // 如果登录了就显示可发帖
         boolean mIsLogin = mSPUtils.getBoolean("Login");
         if(mIsLogin) {
-            fab.setVisibility(View.VISIBLE);
+            mFabSpeedDial.setVisibility(View.VISIBLE);
         } else {
-            fab.setVisibility(View.GONE);
+            mFabSpeedDial.setVisibility(View.GONE);
         }
+        mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+                getMenuInflater().inflate(R.menu.menu_group,navigationMenu);
+                // 对菜单项目初始化
+                // 如果不初始化就返回false
+                return true;
+            }
+        });
+
+        mFabSpeedDial.setMenuListener(new SimpleMenuListenerAdapter() {
+            @Override
+            public boolean onMenuItemSelected(MenuItem item) {
+                switch (item.getItemId()){
+                    // 发贴
+                    case R.id.action_post:
+                        makePost();
+                        break;
+                    // 如果没有小组，则显示加入小组
+                    case R.id.action_add_group:
+                        addGroup();
+                        break;
+                }
+                return false;
+            }});
     }
 
-    public void makePost(View view){
-        mToolbar.setTitle(R.string.post);
+    public void makePost(){
+        (findViewById(R.id.frame_content)).setVisibility(View.VISIBLE);
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -155,42 +180,25 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 .addToBackStack("add")
                 .commit();
-        fab.setVisibility(View.GONE);
     }
+
+    // 加入小组
+    public void addGroup(){
+        String user_id = mSPUtils.getString("userID");
+        mPostPresenter.addGroup(mSPUtils.getString("group_id"), user_id);
+    }
+
     @Override
     public void onBackStackChanged() {
         if(getSupportFragmentManager().getBackStackEntryCount()==0){
-            fab.setVisibility(View.VISIBLE);
+            mFabSpeedDial.setVisibility(View.VISIBLE);
+            (findViewById(R.id.frame_content)).setVisibility(View.GONE);
         }
     }
     private void initImageView(){
         ImageView imageView = (ImageView) (findViewById(R.id.ivImage));
         ImageLoaderUtils.display(this, imageView,mGroup.getImgsrc());
     }
-
-    private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
-        // 最后一个可见的item
-        private int lastVisibleItem;
-
-        // 监听屏幕滚动的item的数量
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            lastVisibleItem = mLayoutManager.findLastVisibleItemPosition();
-        }
-
-        // 监听RecyclerView滑动状态
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            if (newState == RecyclerView.SCROLL_STATE_IDLE
-                    && lastVisibleItem + 1 == mAdapter.getItemCount()
-                    && mAdapter.isShowFooter()) {
-                // 如果列表滑到最底部, 则加载更多
-                mPostPresenter.loadPost(mGroupId, pageIndex);
-            }
-        }
-    };
 
     private PostAdapter.OnItemClickListener mOnItemClickListener = new PostAdapter.OnItemClickListener() {
         @Override
@@ -201,14 +209,9 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
             PostBean post = mAdapter.getItem(position);
             Intent intent = new Intent(PostListActivitySelf, PostDetailActivity.class);
             intent.putExtra("post", post);
-            View transitionView = findViewById(R.id.ivImage);
-
-            ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(PostListActivitySelf, transitionView, getString(R.string.transition_test_img));
-
-            ActivityCompat.startActivity(PostListActivitySelf, intent, options.toBundle());
+            startActivity(intent);
         }
     };
-
 
     @Override
     public void addPost(List<PostBean>postList){
@@ -260,5 +263,11 @@ public class PostListActivity extends SwipeBackActivity implements PostView,Swip
         }
         View view = this == null ? mRecyclerView.getRootView() : this.findViewById(R.id.drawer_layout);
         Snackbar.make(view, getString(R.string.load_fail), Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void showAddGroupSuccess(){
+        ToastUtils.showLong(this, "成功加入小组");
+        mSPUtils.putString("userGroup", mSPUtils.getString("group_id"));
     }
 }

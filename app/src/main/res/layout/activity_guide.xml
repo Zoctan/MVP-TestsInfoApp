@@ -6,12 +6,10 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
-
         <android.support.v4.view.ViewPager
             android:id="@+id/vp_guide"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-
     </FrameLayout>
     
     <Button 
@@ -23,8 +21,7 @@
         android:background="#B6292D"
         android:layout_marginTop="410dp"
         android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll"
@@ -41,7 +38,8 @@
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:padding="10.0dip"
-            android:src="@drawable/dot_selector" />
+            android:src="@drawable/dot_selector" >
+        </ImageView>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -49,7 +47,8 @@
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:padding="10.0dip"
-            android:src="@drawable/dot_selector" />
+            android:src="@drawable/dot_selector" >
+        </ImageView>
 
         <ImageView
             android:layout_width="wrap_content"
@@ -57,15 +56,17 @@
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:padding="10.0dip"
-            android:src="@drawable/dot_selector" />
-        
+            android:src="@drawable/dot_selector" >
+        </ImageView>
+
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:clickable="true"
             android:padding="10.0dip"
-            android:src="@drawable/dot_selector" />
+            android:src="@drawable/dot_selector" >
+        </ImageView>
     </LinearLayout>
 
 </RelativeLayout>

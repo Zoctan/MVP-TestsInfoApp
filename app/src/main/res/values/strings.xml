@@ -9,9 +9,10 @@
     <string name="navigation_test">Solar众评</string>
     <string name="navigation_group">小组</string>
     <string name="navigation_about">关于</string>
+    <string name="navigation_clear">清理缓存</string>
 
-    <string name="toggle_day">日间模式</string>
-    <string name="toggle_night">夜间模式</string>
+    <string name="toggle_day">日间</string>
+    <string name="toggle_night">夜间</string>
     <string name="drawer_open">开</string>
     <string name="drawer_close">关</string>
 
@@ -32,14 +33,18 @@
     <string name="input_name">请输入用户名</string>
     <string name="input_prove">请输入验证码</string>
     <string name="back">返回</string>
+
+    <string name="no_group">还没有加入小组哦~\n加入小组可以查看最新的信息哦 ^_^</string>
+    <string name="group_new">小组动态</string>
+    <string name="add_group">加入小组</string>
+    <string name="out_group">退出小组</string>
     <string name="comment_zone">评论区</string>
     <string name="comment">评论</string>
     <string name="post">发帖</string>
 
     <string name="app_description">欢迎使用Solar众评</string>
     <string name="site">http://www.stormsaber.com/solar</string>
-    <string name="author1">3115000942朱天强</string>
-    <string name="author2">3115000552邝健锋</string>
+    <string name="author">3115000942朱天强\n3115000552邝健锋</string>
 
     <string name="loading">加载中…</string>
     <string name="load_fail">加载数据失败!</string>

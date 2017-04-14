@@ -9,5 +9,6 @@
         android:adjustViewBounds="true"
         android:contentDescription="@null"
         android:scaleType="centerCrop"
-        android:src="@mipmap/pic_startpage" />
+        android:src="@mipmap/pic_startpage" >
+    </ImageView>
 </LinearLayout>

@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".main.widget.MainActivity">
+
+    <item android:id="@+id/action_post"
+        android:title="@string/post"
+        android:icon="@mipmap/ic_add_post"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_add_group"
+        android:title="@string/add_group"
+        android:icon="@mipmap/ic_add_group"
+        app:showAsAction="never" />
+</menu>

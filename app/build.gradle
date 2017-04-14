@@ -55,4 +55,6 @@ dependencies {
     compile 'de.hdodenhof:circleimageview:2.1.0'
     // 滑动后退
     compile 'me.imid.swipebacklayout.lib:library:1.0.0'
+    // fab浮动按钮
+    compile 'io.github.yavski:fab-speed-dial:1.0.6'
 }

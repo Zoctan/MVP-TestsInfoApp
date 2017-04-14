@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".main.widget.MainActivity">
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_test"
             android:icon="@mipmap/ic_test"
             android:checked="true"
-            android:title="@string/navigation_test" />
+            android:title="@string/navigation_test"
+            app:showAsAction="never" />
     </group>
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_group"
             android:icon="@mipmap/ic_group"
-            android:title="@string/navigation_group" />
+            android:title="@string/navigation_group"
+            app:showAsAction="never" />
     </group>
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/navigation_item_about"
             android:icon="@mipmap/ic_about"
-            android:title="@string/navigation_about" />
+            android:title="@string/navigation_about"
+            app:showAsAction="never" />
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/navigation_item_clean"
+            android:icon="@mipmap/ic_clean"
+            android:title="@string/navigation_clear"
+            app:showAsAction="never" />
     </group>
 </menu>

@@ -4,9 +4,12 @@ import android.graphics.Bitmap;
 import android.os.Environment;
 
 import com.zoctan.solar.api.UserUrls;
+import com.zoctan.solar.beans.PostBean;
 import com.zoctan.solar.beans.UserBean;
+import com.zoctan.solar.post.PostJsonUtils;
 import com.zoctan.solar.user.UserJsonUtils;
 import com.zoctan.solar.utils.ImageUtils;
+import com.zoctan.solar.utils.LogUtils;
 import com.zoctan.solar.utils.OkHttpUtils;
 import com.zoctan.solar.utils.OkHttpUtils.Param;
 
@@ -35,6 +38,7 @@ public class UserModelImpl implements UserModel {
         OkHttpUtils.ResultCallback<String> loadUserCallback = new OkHttpUtils.ResultCallback<String>() {
             @Override
             public void onSuccess(String response) {
+                LogUtils.e("userBean",response);
                 UserBean userBean = UserJsonUtils.readJsonUserBeans(response);
                 listener.onSuccess(userBean);
             }
@@ -85,10 +89,56 @@ public class UserModelImpl implements UserModel {
 
         if(imagePath != null){
             // 拿着imagePath上传了
-            File image=new File(imagePath);
+            File image = new File(imagePath);
             // 调用OkHttp的uploadFile方法
             OkHttpUtils.uploadFile(url, image, userData, uploadCallback);
         }
+    }
+
+    @Override
+    public void loadPost(final String type, final String groupId,final UserModel.OnLoadPostListListener listener){
+        OkHttpUtils.ResultCallback<String> loadPostCallback = new OkHttpUtils.ResultCallback<String>() {
+            @Override
+            public void onSuccess(String response) {
+                List<PostBean> postBeanList = PostJsonUtils.readJsonPostBeans(response,groupId);
+                listener.onSuccess(postBeanList);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                listener.onFailure("贴子列表加载失败",e);
+            }
+        };
+        // 组成post表单
+        List<Param> userData = new ArrayList<>();
+        Param actionType = new Param("type", type);
+        Param userGroup = new Param("group", groupId);
+        userData.add(actionType);
+        userData.add(userGroup);
+        String url = getUserUrl();
+        OkHttpUtils.post(url, userData, loadPostCallback);
+    }
+
+    @Override
+    public void outGroup(final String type, final String user_id, final OnOutGroupListener listener){
+        String url = getUserUrl();
+        OkHttpUtils.ResultCallback<String> outGroupCallback = new OkHttpUtils.ResultCallback<String>() {
+            @Override
+            public void onSuccess(String response) {
+                listener.onSuccess();
+            }
+            @Override
+            public void onFailure(Exception e) {
+                listener.onFailure("退出小组失败",e);
+            }
+        };
+        // 组成post表单
+        List<Param> add_params = new ArrayList<>();
+        Param actionType = new Param("type", type);
+        Param user = new Param("user", user_id);
+        add_params.add(actionType);
+        add_params.add(user);
+        OkHttpUtils.post(url, add_params, outGroupCallback);
     }
 
     // User的api网址
