@@ -1,23 +1,14 @@
 # Solar众评
-基于Material Design和MVP的电子产品评测客户端
-* Site:http://www.stormsaber.com/solar
+基于 Material Design 和 MVP 的电子产品评测客户端
 
-<div>
-<img width="30%" height="30%" src="https://github.com/Zoctan/MVP-TestsInfoApp/blob/master/screenshot/1.png"/>
+网站：http://www.stormsaber.com/solar
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/MVP-TestsInfoApp/blob/master/screenshot/2.png"/>
+安卓版本：4.4 及以上
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/MVP-TestsInfoApp/blob/master/screenshot/3.png"/>
-</div>
+![gif](screenshot/1.gif)
 
-<div>
-<img width="30%" height="30%" src="https://github.com/Zoctan/MVP-TestsInfoApp/blob/master/screenshot/4.png"/>
+![gif](screenshot/2.gif)
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/MVP-TestsInfoApp/blob/master/screenshot/5.png"/>
+![gif](screenshot/3.gif)
 
-<img width="30%" height="30%" src="https://github.com/Zoctan/MVP-TestsInfoApp/blob/master/screenshot/6.png"/>
-</div>
-
-<div>
-<img width="30%" height="30%" src="https://github.com/Zoctan/MVP-TestsInfoApp/blob/master/screenshot/7.png"/>
-</div>
+![gif](screenshot/4.gif)
